@@ -1,0 +1,71 @@
+/*
+<!--------------------------------------------------------------->
+<!--                                                           -->
+<!--             Copyright (C) Jesbus Technology               -->
+<!-- Written by Jesse Busman <info@jesbus.com>, September 2017 -->
+<!--                                                           -->
+<!--------------------------------------------------------------->
+*/
+
+/* Define constants */
+:root
+{
+	--dark-background-color: #000000;
+	--light-background-color-old: rgba(140, 70, 30, 1.0);
+	--light-background-color: rgba(56, 42, 28, 1.0);
+	--title-bar-inner-height: 50px;
+	--title-bar-padding-top: 10px;
+	--title-bar-padding-bottom: 30px;
+	--menu-font-color: #FFF7EF;
+	--chat-message-width: 300px;
+}
+
+*
+{
+	font-family: "Times New Roman";
+}
+
+html
+{
+}
+html, body
+{
+	padding: 0;
+	margin: 0;
+	outline: 0;
+	border: 0;
+	width: 100%;
+	height: 100%;
+}
+body
+{
+	background-image: url(the_pyramid_game_3.png);
+	background-attachment: fixed;
+	background-size: auto 100%;
+}
+
+input[type=button], button
+{
+	background-color: black;
+	color: var(--menu-font-color);
+	border: 0;
+	padding: 5px;
+	transition: background-color 0.2s;
+}
+input[type=button]:hover, button:hover
+{
+	cursor: pointer;
+	background-color: #332211;
+}
+
+
+/***************************************************************/
+/***************************************************************/
+/************************** FOOTER *****************************/
+/***************************************************************/
+/***************************************************************/
+
+#footer
+{
+	width: 350px;
+}

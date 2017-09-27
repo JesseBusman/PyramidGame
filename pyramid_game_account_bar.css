@@ -1,0 +1,288 @@
+/*
+<!--------------------------------------------------------------->
+<!--                                                           -->
+<!--             Copyright (C) Jesbus Technology               -->
+<!-- Written by Jesse Busman <info@jesbus.com>, September 2017 -->
+<!--                                                           -->
+<!--------------------------------------------------------------->
+*/
+
+/***************************************************************/
+/***************************************************************/
+/*********************** ACCOUNT BAR ***************************/
+/***************************************************************/
+/***************************************************************/
+
+#accountBar
+{
+	display: inline-block;
+	background-color: rgba(0, 0, 0, 0.5);
+	position: fixed;
+	top: calc(var(--title-bar-inner-height) + var(--title-bar-padding-top) + var(--title-bar-padding-bottom));
+	left: 0px;
+	
+	/* */
+	transition: transform 0.6s, opacity 0.6s;
+	
+	/* Initial position */
+	opacity: 0;
+	transform: translate(-100%, 0px);
+	
+	/* Make sure it's above the pyramid blocks */
+	z-index: 100;
+}
+
+#accountBarArrow
+{
+	position: fixed;
+	top: calc(var(--title-bar-inner-height) + var(--title-bar-padding-top) + var(--title-bar-padding-bottom));
+	left: 0px;
+	display: inline-block;
+	height: 30px;
+	width: 30px;
+	z-index: 100000;
+	background: url(the_pyramid_game_arrow_small.png);
+	background-size: 100% 100%;
+	transform: rotate(90deg);
+	transition: transform 0.6s, opacity 1.0s;
+	opacity: 0.0;
+}
+#accountBarArrow:hover
+{
+	cursor: pointer;
+}
+
+
+
+/***************************************************************/
+/***************************************************************/
+/********************** ACCOUNT SELECTOR ***********************/
+/***************************************************************/
+/***************************************************************/
+
+/* The container box */
+
+#divAccountSelectorContainer
+{
+	height: 118px;
+	margin-bottom: 15px;
+	padding: 12px 12px 10px 12px;
+	border: 2px solid black;
+	width: 420px;
+	display: inline-block;
+	position: relative;
+	margin-right: 14px;
+	background-color: var(--dark-background-color);
+	color: var(--menu-font-color);
+	transition: background-color 0.5s;
+	overflow: visible;
+	text-align: center;
+}
+#divAccountSelectorContainer > div:first-child
+{
+	margin-bottom: 8px;
+}
+
+#divAccountSelectorContainer .accountAndAmountBlock
+{
+	cursor: pointer;
+}
+
+/* The div that contains the accounts */
+#divAccountSelector
+{
+	width: 420px;
+	height: 90px;
+	max-height: 90px;
+	margin-bottom: 35px;
+	display: block;
+	margin-right: 14px;
+	position: absolute;
+	z-index: 5;
+	overflow: visible;
+}
+
+/* The animations for appearing and disappearing account boxes */
+@keyframes animateNewAccountKeyframes {
+	0%
+	{
+		margin-top: 0px;
+		padding: 0px 0px 0px 0px;
+		border: 0px solid black;
+		height: 0px;
+		opacity: 0.0;
+	}
+	50%
+	{
+		height: 65px;
+		opacity: 0.0;
+	}
+	100%
+	{
+		padding: 10px 10px 10px 10px;
+		border: 2px solid black;
+		margin-top: -2px;
+		opacity: 1.0;
+		height: 65px;
+	}
+}
+@keyframes animateRemoveAccountKeyframes
+{
+	0%
+	{
+		padding: 10px 10px 10px 10px;
+		border: 2px solid black;
+		margin-top: -2px;
+		opacity: 1.0;
+		height: 65px;
+	}
+	35%
+	{
+		height: 65px;
+		opacity: 0.0;
+	}
+	100%
+	{
+		margin-top: 0px;
+		padding: 0px 0px 0px 0px;
+		border: 0px solid black;
+		height: 0px;
+		opacity: 0.0;
+	}
+}
+.animateNewAccount
+{
+	animation: animateNewAccountKeyframes 0.3s ease-out 0s 1;
+}
+.animateRemoveAccount
+{
+	animation: animateRemoveAccountKeyframes 0.3s ease-out 0s 1;
+}
+
+
+
+
+/***************************************************************/
+/***************************************************************/
+/****************** WITHDRAWABLE BALANCE ***********************/
+/***************************************************************/
+/***************************************************************/
+
+#divWithdrawableBalanceContainer
+{
+	width: 420px;
+	display: inline-block;
+	border: 2px solid black;
+	padding: 11px 12px 10px 12px;
+	margin-bottom: 15px;
+	vertical-align: top;
+	text-align: center;
+	height: 118px;
+	margin-right: 14px;
+	background-color: var(--dark-background-color);
+	color: var(--menu-font-color);
+	transition: background-color 0.5s;
+}
+
+#divWithdrawableBalanceContainer > div:first-child
+{
+	margin-bottom: 5px;
+}
+
+/*  */
+#divWithdrawableBalanceAndButton
+{
+	margin-top: 10px;
+	margin-bottom: 3px;
+	border: 2px solid black;
+	background-color: var(--light-background-color);
+	color: var(--menu-font-color);
+	padding: 5px 10px 7px 10px;
+	transition: background-color 0.5s;
+	height: 73px;
+	width: 395px;
+}
+#divWithdrawableBalance
+{
+	margin-top: 20px;
+}
+#divWithdrawableBalanceAndButton > input[type=button]
+{
+	position: relative;
+	bottom: 10px;
+}
+
+/***************************************************************/
+/***************************************************************/
+/***************** ACCOUNT AND AMOUNT BLOCK ********************/
+/***************************************************************/
+/***************************************************************/
+
+
+/* Account */
+.accountAndAmountBlock
+{
+	border: 2px solid black;
+	background-color: var(--light-background-color);
+	padding: 10px;
+	overflow: hidden;
+	height: 65px;
+	animation-fill-mode: forwards;
+	z-index: 10;
+	transition: border 0.3s, background-color 0.3s;
+	color: var(--menu-font-color);
+}
+.accountAndAmountBlock:hover
+{
+	border: 2px solid black;
+	background-color: rgba(70, 55, 40, 1.0);
+}
+
+/* Make the account images circular with a shadow */
+.accountAndAmountBlock > canvas
+{
+	border-radius: 50%;
+	box-shadow: 0 0 5px 3px #444444;
+	display: inline-block;
+}
+
+/* Align the account and balance to the top of the account image */
+.accountAndAmountBlock > canvas
+{
+	vertical-align: top;
+}
+
+/* Account address and balance */
+.accountAndAmountBlock > div:nth-child(2)
+{
+	padding-left: 10px;
+	display: inline-block;
+	width: 320px;
+	text-align: right;
+}
+
+/* Optional message */
+.accountAndAmountBlock > div:nth-child(3)
+{
+	position: relative;
+	top: -20px;
+	color: var(--menu-font-color);
+}
+
+/* Ethereum amount */
+.ethAmount
+{
+	font-size: 24pt;
+	text-align: right;
+	background-color: none;
+}
+.ethAmount::after
+{
+	font-size: 12pt;
+	top: -5px;
+	margin-left: 20px;
+	position: relative;
+	content: "ETH";
+	color: var(--menu-font-color);
+	z-index: 0;
+}

@@ -1,0 +1,262 @@
+/*
+<!--------------------------------------------------------------->
+<!--                                                           -->
+<!--             Copyright (C) Jesbus Technology               -->
+<!-- Written by Jesse Busman <info@jesbus.com>, September 2017 -->
+<!--                                                           -->
+<!--------------------------------------------------------------->
+*/
+
+#pyramidFieldContainer
+{
+	min-height: calc(100% - 100px);
+	height: 500px;
+	vertical-align: bottom;
+	display: table;
+	position: relative;
+	top: 100px;
+}
+
+#pyramidField
+{
+	display: table-cell;
+	padding: 10px;
+	white-space: nowrap;
+	vertical-align: bottom;
+	text-align: center;
+}
+
+/* Pyramid rows */
+#pyramidField > div
+{
+	white-space: nowrap;
+	display: block;
+	padding: 0;
+	margin: 0;
+	border: 0;
+	outline: 0;
+	min-height: 0px;
+	font-size: 0pt;
+	text-align: center;
+	transition: min-width 0.5s, width 0.5s;
+}
+
+/* Pyramid blocks */
+#pyramidField > div > div
+{
+	width: 140px;
+	height: 90px;
+	display: inline-block;
+	margin: 0px; /* Don't add margin! It will either screw up the animations, or add a shit-ton of unnecessary extra space at the top*/
+	padding: 0px;
+	outline: 0;
+	font-size: 12pt;
+}
+
+/* Block type: placed */
+.placedBlock
+{
+	position: relative;
+	vertical-align: middle;
+	background-image: url(stien_twa.png);
+	background-size: 100% 100%;
+}
+.placedBlock > canvas
+{
+	position: absolute;
+	bottom: 10px;
+	right: 10px;
+	margin: 0px;
+	border-radius: 50%;
+	overflow: hidden;
+	/* border: 10px solid black; */
+	/* border-image: url(account_icon_border_pixels.png) 30 round; */
+	border-radius: 50%;
+	box-shadow: 0 0 5px 3px #776644;
+}
+.placedBlock > .cellEthAmount
+{
+	position: absolute;
+	display: inline-block;
+	left: 10px;
+	top: 10px;
+	font-weight: bold;
+	color: black;
+	background-color: rgba(255, 0, 0, 0.2);
+}
+.placedBlock > .cellReturnedEthAmount
+{
+	position: absolute;
+	display: inline-block;
+	right: 10px;
+	top: 10px;
+	font-weight: bold;
+	color: black;
+	background-color: rgba(255, 200, 0, 0.2);
+}
+
+/* Block type: available */
+.availableBlock
+{
+	transition: background-color 0.3s, border-color 0.3s, color 0.3s, background-image 0.3s, opacity 0.3s;
+	color: grey;
+	vertical-align: middle;
+	opacity: 0.3;
+	background-image: url(stien_twa.png);
+	background-size: 100% 100%;
+}
+.availableBlock > .cellEthAmount
+{
+	display: inline-block;
+	position: relative;
+	top: 6px;
+}
+.availableBlock:hover
+{
+	cursor: pointer;
+	border-color: #000000;
+	color: black;
+	opacity: 0.5;
+}
+.availableBlock > .cellReturnedEthAmount
+{
+	opacity: 0.0;
+}
+
+/* Block type: hidden (it's unavailable) */
+.hiddenBlock
+{
+	opacity: 0.0;
+	height: 0px !important; 
+	margin: 0px !important;
+	max-height: 0px !important;
+}
+.hiddenBlock > .cellEthAmount
+{
+	font-size: 0pt;
+}
+.hiddenBlock > .cellReturnedEthAmount
+{
+	font-size: 0pt;
+}
+
+/* The animation when a new block takes space in the layout */
+@keyframes animateNewBlockSpaceKeyframes
+{
+	0%
+	{
+		width: 0px;
+		max-height: 0px;
+		margin: 0px;
+	}
+	50%
+	{
+		width: 140px;
+		max-height: 90px;
+		margin: 0px;
+	}
+	100%
+	{
+		width: 140px;
+		max-height: 90px;
+		margin: 0px;
+	}
+}
+.animateNewBlockSpace
+{
+	animation: animateNewBlockSpaceKeyframes 1s ease-in-out 0s 1;
+}
+
+
+/* The animation when a block appears */
+@keyframes animateBlockAppearKeyframes
+{
+	0%
+	{
+		opacity: 0.0;
+	}
+	50%
+	{
+		opacity: 0.0;
+	}
+	100%
+	{
+		opacity: 1.0;
+	}
+}
+.animateBlockAppear
+{
+	animation: animateBlockAppearKeyframes 1s ease-in-out 0s 1;
+}
+
+/* The animation when a block partially appears */
+@keyframes animateBlockPartiallyAppearKeyframes
+{
+	0%
+	{
+		opacity: 0.0;
+	}
+	50%
+	{
+		opacity: 0.0;
+	}
+	100%
+	{
+		opacity: 0.3;
+	}
+}
+.animateBlockPartiallyAppear
+{
+	animation: animateBlockPartiallyAppearKeyframes 1s ease-in-out 0s 1;
+}
+
+/* The animation when a block appears partially to fully */
+@keyframes animateBlockAppearPartiallyToFullyKeyframes
+{
+	0%
+	{
+		opacity: 0.3;
+	}
+	50%
+	{
+		opacity: 0.3;
+	}
+	100%
+	{
+		opacity: 1.0;
+	}
+}
+.animateBlockAppearPartiallyToFully
+{
+	animation: animateBlockAppearPartiallyToFullyKeyframes 1s ease-in-out 0s 1;
+}
+
+/* The animation when a block is waiting for blockchain confirmation */
+@keyframes waitingForConfirmationAnimationKeyframes
+{
+	0%
+	{
+		transform: rotate(0deg);
+	}
+	25%
+	{
+		transform: rotate(10deg);
+	}
+	50%
+	{
+		transform: rotate(0deg);
+	}
+	75%
+	{
+		transform: rotate(-10deg);
+	}
+	100%
+	{
+		transform: rotate(0deg);
+	}
+}
+.waitingForConfirmationAnimation
+{
+	animation: waitingForConfirmationAnimationKeyframes 1s linear 0s 1;
+	animation-iteration-count: infinite;
+}

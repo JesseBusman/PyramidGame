@@ -7,6 +7,16 @@
 <!--------------------------------------------------------------->
 */
 
+// If the browser does not support async, tell the user the bad news
+try
+{
+	(new Function("async function() {}"))();
+}
+catch (e)
+{
+	statusBoxStatus.innerHTML = "Your browser does not support JavaScript async. To use this app, you must use a browser that does.<br/>For example:<br/><ul><li>Google Chrome</li><li>Mozilla Firefox</li><li>Microsoft Edge</li></ul>";
+	throw "We don't have async support!";
+}
 
 // UI stuff
 function addBlockToLoadingBar()

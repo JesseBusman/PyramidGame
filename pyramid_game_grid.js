@@ -285,16 +285,27 @@ async function updateBlockReturnedEth(x, y)
 		
 		var totalReturnedAmount = new BigNumber(0);
 		
+		var blocksPlacedAbove = 0;
+		
 		if (cellAboveLeftDiv && cellAboveLeftDiv.classList.contains("placedBlock"))
 		{
 			totalReturnedAmount = totalReturnedAmount.add(getBetAmountByY(y));
+			blocksPlacedAbove++;
 		}
 		if (cellAboveRightDiv && cellAboveRightDiv.classList.contains("placedBlock"))
 		{
 			totalReturnedAmount = totalReturnedAmount.add(getBetAmountByY(y));
+			blocksPlacedAbove++;
 		}
 		
+		// If there are 0, 1 or 2 blocks above,
+		// make the returned amount's background red, orange or green respectively.
+		if (blocksPlacedAbove == 0) cellReturnedAmountDiv.style.backgroundColor = "rgba(255, 0, 0, 0.2)"; // Red
+		else if (blocksPlacedAbove == 1) cellReturnedAmountDiv.style.backgroundColor = "rgba(255, 200, 0, 0.2)"; // Orange
+		else cellReturnedAmountDiv.style.backgroundColor = "rgba(0, 200, 0, 0.2)"; // Green
+		
 		cellReturnedAmountDiv.innerHTML = "+ "+fromWeiRoundedDown(totalReturnedAmount);
+		
 	}
 }
 

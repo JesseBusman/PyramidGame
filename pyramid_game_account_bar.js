@@ -27,6 +27,14 @@ async function reloadAccounts()
 		throw "No accounts found!";
 	}
 	
+	// MetaMask sets the defaultAccount automatically,
+	// but for Mist we have to do it manually
+	if (!web3.eth.defaultAccount)
+	{
+		console.log("Setting web3.eth.defaultAccount to "+accounts[0]);
+		web3.eth.defaultAccount = accounts[0];
+	}
+	
 	// If we have remembered which account the user selected previously,
 	// select it again
 	if (readCookie("selectedAccountIndex")) selectedAccountIndex = parseInt(readCookie("selectedAccountIndex"));

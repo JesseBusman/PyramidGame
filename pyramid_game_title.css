@@ -138,6 +138,7 @@
 	transition: top 0.5s, left 0.5s;
 	text-align: center;
 	vertical-align: middle;
+	z-index: 10;
 }
 
 #statusBoxStatus

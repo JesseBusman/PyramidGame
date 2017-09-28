@@ -262,6 +262,10 @@ async function init()
 	
 	try
 	{
+		await getNetworkAsync();
+		
+		addBlockToLoadingBar();
+		
 		gameABIinstance = window.web3.eth.contract(GAME_ABI);
 		gameInstance = gameABIinstance.at(GAME_ADDRESS);
 		

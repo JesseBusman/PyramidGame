@@ -162,7 +162,7 @@
 	height: 30px;
 	width: 30px;
 	z-index: 100000;
-	background: url(the_pyramid_game_arrow_small.png);
+	background: url(https://jessebusman.github.io/PyramidGame/the_pyramid_game_arrow_small.png);
 	background-size: 100% 100%;
 	transform: rotate(-90deg);
 	opacity: 0.0;

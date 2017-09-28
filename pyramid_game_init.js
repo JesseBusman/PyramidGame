@@ -173,17 +173,29 @@ async function init()
 	//window.web3 = undefined;
 	try
 	{
-		// Checking if Web3 has been injected by the browser (Mist/MetaMask)
+		var currentDomainAndPath = window.location.hostname + window.location.pathname;
+		
+		console.log("currentDomainAndPath = "+currentDomainAndPath);
+		
+		// Checking if Web3 has been injected by the browser
+		// (Mist, MetaMask or some other plugin or add-on)
 		if (typeof web3 !== 'undefined')
 		{
-			// If we have MetaMask injected, we prefer to use HTTPS.
+			// If we have something injected, we prefer to use HTTPS.
 			if (document.location.protocol == "http:" &&
-			    web3.currentProvider.isMetaMask === true &&
-			    DOMAIN_NAMES_WITH_HTTPS_ENABLED.includes(window.location.hostname))
+			    web3.currentProvider.isMetaMask === true)
 			{
-				console.log("We have metamask! Redirecting to HTTPS...");
-				top.location = "https://"+window.location.hostname+"/";
-				return;
+				console.log("We have a browser plugin! Redirecting to HTTPS...");
+				if (URLS_WITH_HTTP_AND_HTTPS.includes(currentDomainAndPath) ||
+				    URLS_WITH_ONLY_HTTPS.includes(currentDomainAndPath))
+				{
+					top.location = "https://"+currentDomainAndPath;
+					return;
+				}
+				else
+				{
+					console.log("We can't redirect to HTTPS because this site does not support it!");
+				}
 			}
 			
 			// Use Mist/MetaMask's provider
@@ -197,8 +209,25 @@ async function init()
 			if (document.location.protocol == "https:")
 			{
 				console.log("Redirecting to HTTP...");
-				top.location = "http://"+window.location.hostname+"/";
-				return;
+				
+				// If the current site also supports HTTP:
+				if (URLS_WITH_HTTP_AND_HTTPS.includes(currentDomainAndPath) ||
+				    URLS_WITH_ONLY_HTTP.includes(currentDomainAndPath))
+				{
+					top.location = "http://"+currentDomainAndPath;
+					return;
+				}
+				
+				// If the current site does not support HTTP,
+				// we need to redirect to a different site that
+				// does support HTTP:
+				else
+				{
+					console.log("We have to redirect to a different site, because this site only supports HTTPS");
+					
+					top.location = "http://"+URLS_WITH_HTTP_AND_HTTPS[0];
+					return;
+				}
 			}
 			
 			console.log("The browser has not injected web3! Attempting connection to local node...");

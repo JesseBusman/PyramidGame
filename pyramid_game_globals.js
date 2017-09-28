@@ -10,9 +10,18 @@
 
 /**** Constants ****/
 
-// This array contains the domain names where the JavaScript code
-// may redirect the user to https.
-let DOMAIN_NAMES_WITH_HTTPS_ENABLED = ["pyramidgame.jesbus.com"];
+// These arrays contains the URL's where this site may be hosted at.
+// They exist so we can host the same game on different domain names,
+// web servers and paths without having to change anything
+
+// These ones are prefered
+let URLS_WITH_HTTP_AND_HTTPS = ["pyramidgame.jesbus.com/", "pyramidgame.jesbus.com/index.html"];
+
+// These ones are secondary
+let URLS_WITH_ONLY_HTTPS = ["jessebusman.github.io/PyramidGame/", "jessebusman.github.io/PyramidGame/index.html"];
+
+// These ones are tertiary
+let URLS_WITH_ONLY_HTTP = ["pyramidgamedev3.jesb.us/", "pyramidgamedev3.jesb.us/index.html"];
 
 let REQUIRED_NETWORK_ID = 17;
 let REQUIRED_NETWORK_NAME = "the local development chain";

@@ -72,7 +72,7 @@ function registerUsernameAsync(gameInstance, account, usernameBytes)
 	return new Promise((resolve, reject) => {
 		gameInstance.registerUsername(
 			usernameBytes,
-			{from: account, gas: 150000},
+			{from: account, gas: 80000},
 			function(err){
 				if (err != null) { reject(err); return; }
 				resolve();

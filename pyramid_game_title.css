@@ -141,6 +141,16 @@
 	z-index: 10;
 }
 
+#statusBoxStatus a, #statusBoxStatus a:visited, #statusBoxStatus a:active
+{
+	color: white;
+	transition: color 0.4s;
+}
+#statusBoxStatus a:hover
+{
+	color: yellow;
+}
+
 #statusBoxStatus
 {
 	display: inline-block;

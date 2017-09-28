@@ -285,6 +285,7 @@ function createAccountClickedListener(index)
 		{
 			selectedAccountIndex = index;
 			selectedAccount = accounts[index];
+			web3.eth.defaultAccount = selectedAccount;
 			for (var i=0; i<accounts.length; i++)
 			{
 				var accDiv = $("divAccountSelector").childNodes[i];

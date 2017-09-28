@@ -177,15 +177,15 @@ async function init()
 		
 		console.log("currentDomainAndPath = "+currentDomainAndPath);
 		
-		console.log("currentProvider:");
-		console.log(window.web3.currentProvider);
-		
-		console.log("window.web3.currentProvider.constructor.name="+window.web3.currentProvider.constructor.name);
-		
 		// Checking if Web3 has been injected by the browser
 		// (Mist, MetaMask or some other plugin or add-on)
 		if (typeof web3 !== 'undefined')
 		{
+			console.log("currentProvider:");
+			console.log(window.web3.currentProvider);
+			
+			console.log("window.web3.currentProvider.constructor.name="+window.web3.currentProvider.constructor.name);
+			
 			// If we have something injected, we prefer to use HTTPS.
 			if (document.location.protocol == "http:" &&
 			    web3.currentProvider.isMetaMask === true)

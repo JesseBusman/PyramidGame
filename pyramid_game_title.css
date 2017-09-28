@@ -141,14 +141,14 @@
 	z-index: 10;
 }
 
-#statusBoxStatus a, #statusBoxStatus a:visited, #statusBoxStatus a:active
+#statusBoxStatus > a, #statusBoxStatus > a:visited, #statusBoxStatus > a:active
 {
-	color: white;
+	color: white !important;
 	transition: color 0.4s;
 }
-#statusBoxStatus a:hover
+#statusBoxStatus > a:hover
 {
-	color: yellow;
+	color: yellow !important;
 }
 
 #statusBoxStatus

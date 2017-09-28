@@ -167,8 +167,9 @@ btnWithdraw.addEventListener("click", async function(e){
 							// If the user canceled the withdrawal request from their Ethereum client
 							if (err != null && err.message.toString().includes("rejected"))
 							{
-								accountsIsBalanceBeingWithdrawn[accountIndex] = false;
+								accountsBalanceBeingWithdrawn[accountIndex] = false;
 								statusBoxStatus.innerHTML = "Withdrawal cancelled";
+								updateWithdrawableBalance();
 								return;
 							}
 							

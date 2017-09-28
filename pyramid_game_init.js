@@ -177,6 +177,11 @@ async function init()
 		
 		console.log("currentDomainAndPath = "+currentDomainAndPath);
 		
+		console.log("currentProvider:");
+		console.log(window.web3.currentProvider);
+		
+		console.log("window.web3.currentProvider.constructor.name="+window.web3.currentProvider.constructor.name);
+		
 		// Checking if Web3 has been injected by the browser
 		// (Mist, MetaMask or some other plugin or add-on)
 		if (typeof web3 !== 'undefined')

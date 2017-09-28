@@ -83,6 +83,11 @@ function notConnected()
 	pyramidField.style.display = "none";
 	
 	statusBoxLoadingBar.style.display = "none";
+	
+	if (window.browserInjectedPlugin === false)
+	{
+		window.web3 = undefined;
+	}
 }
 
 
@@ -125,6 +130,8 @@ async function init()
 	{
 		statusBoxLoadingBar.style.display = "inline-block";
 	}
+	
+	window.browserInjectedPlugin = null;
 	
 	initializingFailedBecauseNoAccounts = false;
 	initializing = true;
@@ -180,6 +187,8 @@ async function init()
 		// (Mist, MetaMask or some other plugin or add-on)
 		if (typeof web3 !== 'undefined')
 		{
+			window.browserInjectedPlugin = true;
+			
 			console.log("currentProvider:");
 			console.log(window.web3.currentProvider);
 			
@@ -209,6 +218,8 @@ async function init()
 		}
 		else
 		{
+			window.browserInjectedPlugin = false;
+			
 			// If we are on HTTPS, we cannot connect to the local node because the local node is HTTP. Browsers don't allow JS to connect from HTTPS to HTTP. We must reload the page to use HTTP.
 			if (document.location.protocol == "https:")
 			{

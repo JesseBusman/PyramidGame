@@ -10,7 +10,7 @@
 // If the browser does not support async, tell the user the bad news
 try
 {
-	(new Function("async function() {}"))();
+	(new Function("async () => {}"))();
 }
 catch (e)
 {

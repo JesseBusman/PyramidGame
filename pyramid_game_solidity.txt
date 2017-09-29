@@ -170,9 +170,9 @@ contract PyramidGame
         // Subtract the withdrawn amount from the user's balance
         addressBalances[msg.sender] -= amountToWithdraw;
         
-		// Transfer the amount to the user's address
-		// If the transfer() call fails an exception will be thrown,
-		// and therefore the user's balance will be automatically restored
+        // Transfer the amount to the user's address
+        // If the transfer() call fails an exception will be thrown,
+        // and therefore the user's balance will be automatically restored
         msg.sender.transfer(amountToWithdraw);
     }
     
@@ -235,15 +235,15 @@ contract PyramidGame
         require(msg.sender == administrator);
         censoredChatMessages[chatMessageIndex] = true;
     }
-	
+    
     /////////////////////////////////////////////
     // Game ownership functions
-	function transferOwnership(address newAdministrator) external
+    function transferOwnership(address newAdministrator) external
     {
         require(msg.sender == administrator);
         administrator = newAdministrator;
     }
-	
+    
     function setFeeDivisor(uint256 newFeeDivisor) external
     {
         require(msg.sender == administrator);

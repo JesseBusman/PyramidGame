@@ -40,7 +40,7 @@ function notConnected()
 		
 		else if (typeof(mist) !== "undefined")
 		{
-			statusBoxStatus.innerHTML = "No accounts found! Maybe you haven't given this app permission to view accounts? Mist should have a '<b style='color: rgb(130, 165, 205); background-color: white; padding: 5px;'>CONNECT</b>' button to the top-right of this page.";
+			statusBoxStatus.innerHTML = "No accounts found! Maybe you haven't given this app permission to view accounts? Mist should have a '<b style='color: rgb(130, 165, 205); background-color: white; padding: 5px; font-size: 10pt;margin: 0px 5px 0px 5px;font-family: Arial;'>CONNECT</b>' button to the top-right of this page.";
 		}
 		
 		// Unknown client

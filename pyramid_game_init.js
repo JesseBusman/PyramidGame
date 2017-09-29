@@ -286,7 +286,7 @@ async function init()
 		
 		addBlockToLoadingBar();
 		
-		reloadAccounts();
+		await reloadAccounts();
 		
 		if (accounts.length == 0)
 		{

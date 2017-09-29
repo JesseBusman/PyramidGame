@@ -288,6 +288,12 @@ async function init()
 		
 		reloadAccounts();
 		
+		if (accounts.length == 0)
+		{
+			initializingFailedBecauseNoAccounts = true;
+			throw "No accounts found!";
+		}
+		
 		addBlockToLoadingBar();
 		
 		await updateGame();

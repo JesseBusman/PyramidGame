@@ -8,19 +8,8 @@ contract PyramidGame
     uint256 private adminFeeDivisor; // e.g. 100 means a 1% fee, 200 means a 0.5% fee
     
     /////////////////////////////////////////////
-    // Game ownership
+    // Game owner
     address private administrator;
-    function transferOwnership(address newAdministrator) external
-    {
-        require(msg.sender == administrator);
-        administrator = newAdministrator;
-    }
-    function setFeeDivisor(uint256 newFeeDivisor) external
-    {
-        require(msg.sender == administrator);
-        require(newFeeDivisor >= 20); // The fee may never exceed 5%
-        adminFeeDivisor = newFeeDivisor;
-    }
     
     /////////////////////////////////////////////
     // Pyramid grid data
@@ -245,5 +234,20 @@ contract PyramidGame
     {
         require(msg.sender == administrator);
         censoredChatMessages[chatMessageIndex] = true;
+    }
+	
+    /////////////////////////////////////////////
+    // Game ownership functions
+	function transferOwnership(address newAdministrator) external
+    {
+        require(msg.sender == administrator);
+        administrator = newAdministrator;
+    }
+	
+    function setFeeDivisor(uint256 newFeeDivisor) external
+    {
+        require(msg.sender == administrator);
+        require(newFeeDivisor >= 20); // The fee may never exceed 5%
+        adminFeeDivisor = newFeeDivisor;
     }
 }

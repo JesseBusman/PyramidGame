@@ -279,7 +279,8 @@ async function updateChatMessages()
 		if (shouldScrollDown)
 		{
 			// If we are initializing, scroll down without animation
-			if (initializing)
+			// Also, if the scroll function does not exist
+			if (initializing || !chatMessagesDiv.scroll)
 			{
 				chatMessagesDiv.scrollY = chatMessagesDiv.scrollHeight;
 				chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;

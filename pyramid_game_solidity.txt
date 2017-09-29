@@ -70,7 +70,7 @@ contract PyramidGame
     function PyramidGame() public
     {
         administrator = msg.sender;
-        adminFeeDivisor = 100; // Default fee is 1%
+        adminFeeDivisor = 200; // Default fee is 0.5%
         
         // The administrator gets a few free chat messages :-)
         addressesToChatMessagesLeft[administrator] += 5;

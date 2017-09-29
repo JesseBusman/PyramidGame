@@ -157,7 +157,7 @@ function sendChatMessageAsync(gameInstance, address, message)
 	return new Promise((resolve, reject) => {
 		gameInstance.sendChatMessage(
 			message,
-			{from: address, gas: 150000},
+			{from: address, gas: 52656 + message.length * 2564 + 20000},
 			function(err, chatMessagesLeft)
 			{
 				if (err != null) { reject(err); return; }

@@ -99,9 +99,8 @@ function pollForAccessToAccounts()
 	getAccountsAsync().then(async function(accs){
 		if (accs.length != 0)
 		{
-			console.log("We now have access to accounts! Reloading accounts...");
-			await reloadAccounts();
-			updateWithdrawableBalance();
+			console.log("We now have access to accounts! Re-initializing...");
+			init();
 		}
 		else
 		{

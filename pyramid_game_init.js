@@ -66,7 +66,7 @@ function notConnected()
 	}
 	else
 	{
-		statusBoxStatus.innerHTML = "Could not connect to the Ethereum network!<br/><br/>If you haven't installed Ethereum yet, we recommend <a href='https://parity.io/' target='_blank'>Parity</a><br/><br/>If you have already installed Ethereum, please make sure it is running, it is synchronized and this app has permission to access it. You may also have to log in.";
+		statusBoxStatus.innerHTML = "Could not connect to the Ethereum network!<br/><br/>If you haven't installed Ethereum yet, we recommend using the Google Chrome browser with the MetaMask plugin, or installing <a href='https://parity.io/' target='_blank'>Parity</a><br/><br/>If you have already installed Ethereum, please make sure it is running, it is synchronized and this app has permission to access it. You may also have to log in.";
 	}
 	
 	statusBox.classList.add("statusBoxMiddleOfScreen");

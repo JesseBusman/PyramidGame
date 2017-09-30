@@ -143,7 +143,6 @@ async function init()
 	chatboxUsername.innerHTML = "";
 	chatMessagesDiv.innerHTML = "";
 	
-	chatMessages = [];
 	currentTotalChatMessages = 0;
 	
 	accounts = [];

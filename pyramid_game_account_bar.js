@@ -37,7 +37,14 @@ async function reloadAccounts()
 	
 	// If we have remembered which account the user selected previously,
 	// select it again
-	if (readCookie("selectedAccountIndex")) selectedAccountIndex = parseInt(readCookie("selectedAccountIndex"));
+	if (readCookie("selectedAccountIndex"))
+	{
+		selectedAccountIndex = parseInt(readCookie("selectedAccountIndex"));
+		
+		{
+			selectedAccountIndex = 0;
+		}
+	}
 	
 	// Loop over all the accounts
 	for (var i=0; i<accounts.length; i++)

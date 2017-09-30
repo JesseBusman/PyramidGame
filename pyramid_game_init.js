@@ -141,9 +141,10 @@ async function init()
 	currentNetworkId = null;
 	
 	chatboxUsername.innerHTML = "";
+	chatMessagesDiv.innerHTML = "";
 	
 	chatMessages = [];
-	currentTotalChatMessages = null;
+	currentTotalChatMessages = 0;
 	
 	accounts = [];
 	accountBalances = [];

@@ -337,10 +337,10 @@ async function init()
 	statusBoxStatus.innerHTML = "Connected";
 	
 	// Hide or show the account bar and chatbox, based on previous browser session state.
-	// By default, the account bar will be shown, and the chatbox will be hidden.
+	// By default, the account bar will be shown, and the chatbox will also be shown.
 	if (!readCookie("showAccountBar") || readCookie("showAccountBar") === "yes") showAccountBar();
 	else hideAccountBar();
-	if (readCookie("showChatbox") === "yes") showChatbox();
+	if (!readCookie("showChatbox") || readCookie("showChatbox") === "yes") showChatbox();
 	else hideChatbox();
 	
 	// Show the arrows to hide & show the account bar and chatbox

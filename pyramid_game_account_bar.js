@@ -41,6 +41,8 @@ async function reloadAccounts()
 	{
 		selectedAccountIndex = parseInt(readCookie("selectedAccountIndex"));
 		
+		// Don't select an index that does not exist:
+		if (selectedAccountIndex >= accounts.length || selectedAccountIndex < 0)
 		{
 			selectedAccountIndex = 0;
 		}

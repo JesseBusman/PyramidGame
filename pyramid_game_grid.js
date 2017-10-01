@@ -196,6 +196,14 @@ function getCell_createIfNotExists(x, y, onlyCreateIfRowExists)
 							return;
 						}
 						statusBoxStatus.innerHTML = "Block submitted! Waiting for confirmation...";
+						
+						// Add the coordinates to a cookie. If the user refreshes,
+						// the waitingForConfirmationAnimation should be added again
+						var confirmingCoords = readCookie("confirmingCoords");
+						if (confirmingCoords === null) confirmingCoords = "";
+						confirmingCoords += x+"_"+y+"__";
+						createCookie("confirmingCoords", confirmingCoords, 1);
+						
 						betsSubmittedAndWaitingFor.push([x, y]);
 						console.log("betsSubmittedAndWaitingFor="+JSON.stringify(betsSubmittedAndWaitingFor));
 						updateGame();
@@ -263,6 +271,22 @@ function getCell_createIfNotExists(x, y, onlyCreateIfRowExists)
 	// If a cell above does not exist yet, create it:
 	if (rightCellDiv && !$("cell"+(x)+"_"+(y+1))) getCell_createIfNotExists(x, y+1, true);
 	if (leftCellDiv && !$("cell"+(x-1)+"_"+(y+1))) getCell_createIfNotExists(x-1, y+1, true);
+	
+	// If the block is waiting for confirmation because the
+	// user submitted it, add the waitingForConfirmationAnimation
+	var confirmingCoords = readCookie("confirmingCoords");
+	var confirmingCoordsArr = confirmingCoords.trim().split("__");
+	for (var i=0; i<confirmingCoordsArr.length; i++)
+	{
+		if (confirmingCoordsArr[i] == "") continue;
+		var coords = confirmingCoordsArr[i].split("_");
+		if (parseInt(x) === parseInt(coords[0]) &&
+		    parseInt(y) === parseInt(coords[1]))
+		{
+			cellDiv.classList.add("waitingForConfirmationAnimation");
+			break;
+		}
+	}
 	
 	return cellDiv;
 }

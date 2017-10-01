@@ -159,6 +159,26 @@ async function init()
 	
 	betsSubmittedAndWaitingFor = [];
 	
+	try
+	{
+		// Loop through blocks that are waiting for confirmation because the
+		// user submitted them and add their coordinates to betsSubmittedAndWaitingFor
+		var confirmingCoords = readCookie("confirmingCoords");
+		var confirmingCoordsArr = confirmingCoords.trim().split("__");
+		for (var i=0; i<confirmingCoordsArr.length; i++)
+		{
+			if (confirmingCoordsArr[i] == "") continue;
+			var coords = confirmingCoordsArr[i].split("_");
+			betsSubmittedAndWaitingFor.push([parseInt(coords[0]), parseInt(coords[1])]);
+			break;
+		}
+	}
+	catch (e)
+	{
+		console.log("Error in reading confirmingCoords cookie:");
+		console.error(e);
+	}
+	
 	selectedAccount = null;
 	selectedAccountIndex = 0;
 	selectedAccountUsername = null;

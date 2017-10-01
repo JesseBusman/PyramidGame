@@ -275,16 +275,19 @@ function getCell_createIfNotExists(x, y, onlyCreateIfRowExists)
 	// If the block is waiting for confirmation because the
 	// user submitted it, add the waitingForConfirmationAnimation
 	var confirmingCoords = readCookie("confirmingCoords");
-	var confirmingCoordsArr = confirmingCoords.trim().split("__");
-	for (var i=0; i<confirmingCoordsArr.length; i++)
+	if (confirmingCoords != null)
 	{
-		if (confirmingCoordsArr[i] == "") continue;
-		var coords = confirmingCoordsArr[i].split("_");
-		if (parseInt(x) === parseInt(coords[0]) &&
-		    parseInt(y) === parseInt(coords[1]))
+		var confirmingCoordsArr = confirmingCoords.trim().split("__");
+		for (var i=0; i<confirmingCoordsArr.length; i++)
 		{
-			cellDiv.classList.add("waitingForConfirmationAnimation");
-			break;
+			if (confirmingCoordsArr[i] == "") continue;
+			var coords = confirmingCoordsArr[i].split("_");
+			if (parseInt(x) === parseInt(coords[0]) &&
+				parseInt(y) === parseInt(coords[1]))
+			{
+				cellDiv.classList.add("waitingForConfirmationAnimation");
+				break;
+			}
 		}
 	}
 	

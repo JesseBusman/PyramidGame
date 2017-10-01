@@ -109,18 +109,22 @@ async function updateGame()
 					throw "Error: Placed block location was neither hidden nor available: "+cellDiv.classList+" id="+cellDiv.id;
 				}
 				
+				// The waiting for confirmation animation should always be removed
+				// from a placed block
+				cellDiv.classList.remove("waitingForConfirmationAnimation");
+				
 				for (var i=0; i<betsSubmittedAndWaitingFor.length; i++)
 				{
-					// If the block was placed by the user, remove it from the waiting list, and remove the waiting animation
+					// If the block was placed by the user, remove it from the waiting list,
+					// and update the status message
 					if (betsSubmittedAndWaitingFor[i][0] == x &&
 					    betsSubmittedAndWaitingFor[i][1] == y)
 					{
-						cellDiv.classList.remove("waitingForConfirmationAnimation");
 						betsSubmittedAndWaitingFor.splice(i, 1);
 						i--;
 						if (betsSubmittedAndWaitingFor.length == 0 && statusBoxStatus.innerHTML.includes("Block submitted"))
 						{
-							statusBoxStatus.innerHTML = "Connected";
+							statusBoxStatus.innerHTML = "Block successfully placed";
 							updateWithdrawableBalance();
 							updateChatMessagesLeft();
 							var accountIndex = accounts.indexOf(address);

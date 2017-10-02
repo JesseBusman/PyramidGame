@@ -32,3 +32,8 @@ body
 {
 	color: white;
 }
+#aboutText
+{
+	font-size: 16pt;
+	padding-right: 50px;
+}

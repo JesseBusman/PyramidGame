@@ -100,6 +100,8 @@ function pollForAccessToAccounts()
 		if (accs.length != 0)
 		{
 			console.log("We now have access to accounts! Re-initializing...");
+			initializingFailedBecauseNoAccounts = false;
+			errorDuringInitialization = false;
 			init();
 		}
 		else
@@ -128,6 +130,7 @@ async function init()
 	if (!errorDuringInitialization)
 	{
 		statusBoxLoadingBar.style.display = "inline-block";
+		$("statusBoxStatus").innerHTML = "Connecting...";
 	}
 	
 	window.browserInjectedPlugin = null;
@@ -175,8 +178,8 @@ async function init()
 	}
 	catch (e)
 	{
-		console.log("Error in reading confirmingCoords cookie:");
-		console.error(e);
+		//console.log("Error in reading confirmingCoords cookie:");
+		//console.error(e);
 	}
 	
 	selectedAccount = null;
@@ -305,6 +308,11 @@ async function init()
 		
 		addBlockToLoadingBar();
 		
+		if (!errorDuringInitialization)
+		{
+			statusBoxStatus.innerHTML = "Loading your accounts...";
+		}
+		
 		await reloadAccounts();
 		
 		if (accounts.length == 0)
@@ -432,8 +440,6 @@ else
 
 
 window.addEventListener("load", function(e){
-	$("statusBoxStatus").innerHTML = "Connecting...";
-	
 	console.log("Calling init() because the page loaded...");
 	init();
 	
@@ -445,6 +451,12 @@ window.addEventListener("load", function(e){
 			init();
 			return;
 		}
+		
+		// Don't try to update things if init() is running
+		if (initializing) return;
+		
+		// Don't try to update things if init() failed because of no accounts
+		if (initializingFailedBecauseNoAccounts) return;
 		
 		if (!shouldPollForNewBets) return;
 		

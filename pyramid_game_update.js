@@ -152,7 +152,17 @@ async function updateGame()
 				}
 				
 				pyramidTotalBlocks++;
+				
+				if (initializing && !errorDuringInitialization)
+				{
+					$("statusBoxStatus").innerHTML = "Loaded "+pyramidTotalBlocks+" of "+newTotalBlocks+" blocks...";
+				}
 			}
+		}
+		
+		if (initializing && !errorDuringInitialization)
+		{
+			$("statusBoxStatus").innerHTML = "Loading chatbox...";
 		}
 		
 		await updateChatMessages();

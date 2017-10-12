@@ -29,11 +29,43 @@ async function updateGame()
 		{
 			console.log("There are "+(newTotalBlocks-pyramidTotalBlocks)+" new blocks!");
 			
-			// Loop over all the new blocks
+			var totalNewBlocksLoaded = 0;
+			
+			var newBlockCoordinates = [];
+			var newBlockAddresses = [];
+			
+			if (initializing && !errorDuringInitialization)
+			{
+				$("statusBoxStatus").innerHTML = "Loading block coordinates...";
+			}
+			
+			// Loop over all the new blocks and fetch their coordinates asynchronously
+			for (var i=pyramidTotalBlocks; i<newTotalBlocks; i++)
+			{
+				newBlockCoordinates[i] = getBlockCoordinatesAtIndexAsync(gameInstance, i);
+			}
+			
+			newBlockCoordinates = await Promise.all(newBlockCoordinates);
+			
+			addBlockToLoadingBar();
+			
+			if (initializing && !errorDuringInitialization)
+			{
+				$("statusBoxStatus").innerHTML = "Loading block addresses...";
+			}
+			
+			// Loop over all the new blocks and fetch their addresses asynchronously
+			for (var i=pyramidTotalBlocks; i<newTotalBlocks; i++)
+			{
+				newBlockAddresses[i] = getBlockAddress(gameInstance, newBlockCoordinates[i]);
+			}
+			
+			newBlockAddresses = await Promise.all(newBlockAddresses);
+			
+			// Loop over all the new blocks and update the game state
 			while (pyramidTotalBlocks < newTotalBlocks)
 			{
-				// Fetch the block coordinates
-				var coords = await getBlockCoordinatesAtIndexAsync(gameInstance, pyramidTotalBlocks);
+				var coords = newBlockCoordinates[pyramidTotalBlocks];
 				
 				// Extract the x & y coordinates from the contract response
 				coords = parseInt(coords.toString());
@@ -69,7 +101,7 @@ async function updateGame()
 				else pyramidLowestXWithPlacedBlock = Math.min(pyramidLowestXWithPlacedBlock, x);
 				
 				// Get the address of the sender of this block
-				var address = await getBlockAddress(gameInstance, coords);
+				var address = newBlockAddresses[pyramidTotalBlocks];
 				
 				// Generate the account picture of the person who placed this bet
 				var betAccountPicture = blockies({ // All options are optional
@@ -152,11 +184,6 @@ async function updateGame()
 				}
 				
 				pyramidTotalBlocks++;
-				
-				if (initializing && !errorDuringInitialization)
-				{
-					$("statusBoxStatus").innerHTML = "Loaded "+pyramidTotalBlocks+" of "+newTotalBlocks+" blocks...";
-				}
 			}
 		}
 		

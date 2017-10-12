@@ -112,9 +112,9 @@ async function updateGame()
 				
 				// If the user clicks on an account picture, open etherscan in a new window
 				betAccountPicture.setAttribute("title", address.toString()+"\r\nClick to view on etherscan.io");
-				betAccountPicture.addEventListener("click", function(e){
-					window.open("https://etherscan.io/address/"+address.toString());
-				});
+				betAccountPicture.addEventListener("click", (function(clickedAddress){return (function(e){
+					window.open("https://etherscan.io/address/"+clickedAddress.toString());
+				});})(address.toString()));
 				
 				// Add an animation to the account picture
 				betAccountPicture.classList.add("animateBlockAppear");

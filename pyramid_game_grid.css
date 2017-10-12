@@ -74,6 +74,10 @@
 	border-radius: 50%;
 	box-shadow: 0 0 5px 3px #776644;
 }
+.placedBlock > canvas
+{
+	cursor: pointer;
+}
 .placedBlock > .cellEthAmount
 {
 	position: absolute;

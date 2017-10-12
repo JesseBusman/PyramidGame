@@ -130,6 +130,10 @@ function getCell_createIfNotExists(x, y, onlyCreateIfRowExists)
 			{
 				console.log("Click on placed block");
 			}
+			else if (cellDiv.classList.contains("waitingForConfirmationAnimation"))
+			{
+				console.log("Click on processing block");
+			}
 			
 			// When an available cell is clicked, we should start the block placing procedure.
 			else if (cellDiv.classList.contains("availableBlock"))

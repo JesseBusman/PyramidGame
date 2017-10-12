@@ -176,7 +176,7 @@ btnWithdraw.addEventListener("click", async function(e){
 				bal,
 				{
 					from: theSelectedAccount,
-					gas: 90000
+					gas: 70000
 				},
 				(
 					function(accountIndex){

@@ -48,6 +48,8 @@ var currentNetworkId = null;
 var initializing = false;
 var errorDuringInitialization = false;
 var initializingFailedBecauseNoAccounts = false;
+var initializingFailedBecauseWrongNetwork = false;
+var initializingFailedBecauseNotSyncedBlocksBehind = null;
 var connected = false;
 
 

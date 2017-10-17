@@ -13,6 +13,16 @@ with the Ethereum contract functions. This makes it easier to deal with their
 asynchronous nature.
 */
 
+function getIsSyncingAsync()
+{
+	//return window.web3.eth.isSyncing();
+	return new Promise((resolve, reject) => {
+		window.web3.eth.getSyncing(function (err, syncState){
+			if (err != null) { reject(err); return; }
+			resolve(syncState);
+		});
+	});
+}
 function getNetworkAsync()
 {
 	return new Promise((resolve, reject) => {

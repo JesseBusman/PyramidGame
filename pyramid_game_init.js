@@ -25,9 +25,18 @@ function notConnected()
 	if (initializing) errorDuringInitialization = true;
 	connected = false;
 	
-	if (currentNetworkId != REQUIRED_NETWORK_ID && currentNetworkId !== null)
+	if (initializingFailedBecauseWrongNetwork)
 	{
+		connected = true;
 		statusBoxStatus.innerHTML = "Invalid network! Please switch to "+REQUIRED_NETWORK_NAME+"!";
+		
+		// Keep polling until we are on the correct network
+		setTimeout(pollForCorrectNetwork, 1000);
+	}
+	
+	else if (initializingFailedBecauseNotSyncedBlocksBehind != null)
+	{
+		statusBoxStatus.innerHTML = "Your Ethereum client is not synchronized:<br/>It's about "+initializingFailedBecauseNotSyncedBlocksBehind+" blocks behind.<br/><br/>Please wait until it has synchronized more.";
 	}
 	
 	else if (initializingFailedBecauseNoAccounts)
@@ -117,6 +126,33 @@ function pollForAccessToAccounts()
 }
 
 
+function pollForCorrectNetwork()
+{
+	if (!connected) return;
+	
+	console.log("Polling for correct network ID...");
+	getNetworkIdAsync().then(async function(id){
+		currentNetworkId = id;
+		if (currentNetworkId != REQUIRED_NETWORK_ID)
+		{
+			console.log("Still on invalid network ID: "+currentNetworkId);
+			setTimeout(pollForCorrectNetwork, 1000);
+		}
+		else
+		{
+			console.log("We are now in the correct network! Re-initializing...");
+			initializingFailedBecauseWrongNetwork = false;
+			errorDuringInitialization = false;
+			init();
+		}
+	},
+	function(err){
+		console.log("Not connected because of error in pollForCorrectNetwork() in getNetworkIdAsync() callback:");
+		notConnected();
+	});
+}
+
+
 
 
 async function init()
@@ -136,6 +172,8 @@ async function init()
 	window.browserInjectedPlugin = null;
 	
 	initializingFailedBecauseNoAccounts = false;
+	initializingFailedBecauseWrongNetwork = false;
+	initializingFailedBecauseNotSyncedBlocksBehind = null;
 	initializing = true;
 	pyramidBottomLayerWei = null;
 	errorDuringInitialization = false;
@@ -288,6 +326,48 @@ async function init()
 		
 		addBlockToLoadingBar();
 		
+		var syncState = null;
+		
+		try
+		{
+			console.log("Checking if the user's client is synchronized...");
+			
+			syncState = await getIsSyncingAsync();
+			
+			console.log("SYNC STATE:");
+			console.log(syncState);
+		}
+		catch (e)
+		{
+			console.error("Warning: Error occurred while checking sync state:");
+			console.error(e);
+		}
+		
+		if (syncState === false)
+		{
+			console.log("The client is synced! :-)");
+		}
+		else if (syncState === null)
+		{
+			console.log("Could not check sync state!");
+		}
+		else if (syncState.hasOwnProperty("currentBlock") && syncState.hasOwnProperty("highestBlock"))
+		{
+			var currentBlock = parseInt(syncState.currentBlock);
+			var highestBlock = parseInt(syncState.highestBlock);
+			var blocksBehind = highestBlock - currentBlock;
+			
+			console.log("currentBlock="+currentBlock);
+			console.log("highestBlock="+highestBlock);
+			console.log("blocksBehind="+blocksBehind);
+			
+			if (blocksBehind > 100) // If the user is more than 100 blocks (~50 minutes) behind, throw an error
+			{
+				initializingFailedBecauseNotSyncedBlocksBehind = blocksBehind;
+				throw "Your Ethereum client is not synchronized: you are "+blocksBehind+" blocks behind.";
+			}
+		}
+		
 		gameABIinstance = window.web3.eth.contract(GAME_ABI);
 		gameInstance = gameABIinstance.at(GAME_ADDRESS);
 		
@@ -299,6 +379,7 @@ async function init()
 		
 		if (currentNetworkId != REQUIRED_NETWORK_ID)
 		{
+			initializingFailedBecauseWrongNetwork = true;
 			throw "Incorrect network!";
 		}
 		
@@ -445,6 +526,12 @@ window.addEventListener("load", function(e){
 	
 	// Create the 2 second polling interval
 	setInterval(async function(){
+		// Don't try to update things if init() failed because of no accounts
+		if (initializingFailedBecauseNoAccounts) return;
+		
+		// Don't try to update things if init() failed because of wrong network
+		if (initializingFailedBecauseWrongNetwork) return;
+		
 		// If we are not connected, attempt to connect
 		if (!connected)
 		{
@@ -454,9 +541,6 @@ window.addEventListener("load", function(e){
 		
 		// Don't try to update things if init() is running
 		if (initializing) return;
-		
-		// Don't try to update things if init() failed because of no accounts
-		if (initializingFailedBecauseNoAccounts) return;
 		
 		if (!shouldPollForNewBets) return;
 		

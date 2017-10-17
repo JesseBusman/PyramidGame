@@ -174,7 +174,7 @@ chatMessageBox.addEventListener("keydown", function(e){
 				}
 				
 				// If the user canceled the transaction from their Ethereum client
-				else if (e.toString().indexOf("rejected") != -1)
+				else if (e.toString().indexOf("rejected") != -1 || e.toString().indexOf("User denied") != -1)
 				{
 					if (statusBoxStatus.innerHTML.indexOf("chat") != -1)
 						statusBoxStatus.innerHTML = "Sending chat message was canceled";

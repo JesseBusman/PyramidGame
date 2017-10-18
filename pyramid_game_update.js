@@ -232,9 +232,40 @@ async function updateAccountBalance(accountIndex)
 			}
 		}
 		
-		accountBalances[accountIndex] = bal;
-		$("accountBalance"+accountIndex).innerHTML = fromWeiRoundedDown(bal);
-		$("accountBalance"+accountIndex).setAttribute("title", ""+web3.fromWei(bal));
+		var withdrawableBalance = await getCurrentWithdrawableBalanceAsync(gameInstance, accounts[accountIndex]);
+		
+		// If there are block placements in flight for the currently selected account,
+		// reduce the available withdrawableBalance by the amount that will be spent:
+		for (var i=0; i<betsSubmittedAndWaitingFor.length; i++)
+		{
+			var yBeingSubmitted = betsSubmittedAndWaitingFor[i][1];
+			var accountBeingSubmitted = betsSubmittedAndWaitingFor[i][2];
+			console.log("updateAccountBalance: "+accountBeingSubmitted+" is submitting at y="+yBeingSubmitted);
+			if (accountBeingSubmitted === accounts[accountIndex])
+			{
+				withdrawableBalance = withdrawableBalance.sub(getBetAmountByY(yBeingSubmitted));
+			}
+		}
+		
+		// If more than the withdrawable balance has been used up,
+		// subtract the rest from the displayed account balance:
+		if (withdrawableBalance.comparedTo(new BigNumber(0)) == -1)
+		{
+			bal = bal.add(withdrawableBalance);
+		}
+		
+		// If we end up with a negative balance, show "Loading..."
+		if (bal.comparedTo(new BigNumber(0)) == -1)
+		{
+			$("accountBalance"+accountIndex).innerHTML = "Loading...";
+			accountBalances[accountIndex] = new BigNumber(0);
+		}
+		else
+		{
+			accountBalances[accountIndex] = bal;
+			$("accountBalance"+accountIndex).innerHTML = fromWeiRoundedDown(bal);
+			$("accountBalance"+accountIndex).setAttribute("title", ""+web3.fromWei(bal));
+		}
 	}
 	catch (e)
 	{
@@ -260,6 +291,21 @@ async function updateWithdrawableBalance()
 			var theSelectedAccountIndex = selectedAccountIndex;
 			
 			var balance = await getCurrentWithdrawableBalanceAsync(gameInstance, selectedAccount);
+			
+			// If there are block placements in flight for the currently selected account,
+			// reduce the available balance by the amount that will be spent:
+			for (var i=0; i<betsSubmittedAndWaitingFor.length; i++)
+			{
+				var yBeingSubmitted = betsSubmittedAndWaitingFor[i][1];
+				var accountBeingSubmitted = betsSubmittedAndWaitingFor[i][2];
+				console.log("updateWithdrawableBalance: "+accountBeingSubmitted+" is submitting at y="+yBeingSubmitted);
+				if (accountBeingSubmitted === selectedAccount)
+				{
+					balance = balance.sub(getBetAmountByY(yBeingSubmitted));
+				}
+			}
+			
+			if (balance.comparedTo(new BigNumber(0)) == -1) balance = new BigNumber(0);
 			
 			// If the user selected a different account while we were loading the withdrawable balance,
 			// quit and start over

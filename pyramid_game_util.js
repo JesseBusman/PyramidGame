@@ -14,13 +14,13 @@ function escapeHtml(text)
 }
 
 // Utility functions for cookies
-function createCookie(name,value,days)
+function createCookie(name, value, seconds)
 {
 	var expires = "";
-	if (days)
+	if (seconds)
 	{
 		var date = new Date();
-		date.setTime(date.getTime() + (days*24*60*60*1000));
+		date.setTime(date.getTime() + (seconds*1000));
 		expires = "; expires=" + date.toUTCString();
 	}
 	document.cookie = name + "=" + value + expires + "; path=/";

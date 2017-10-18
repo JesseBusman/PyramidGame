@@ -210,7 +210,7 @@ async function init()
 		{
 			if (confirmingCoordsArr[i] == "") continue;
 			var coords = confirmingCoordsArr[i].split("_");
-			betsSubmittedAndWaitingFor.push([parseInt(coords[0]), parseInt(coords[1])]);
+			betsSubmittedAndWaitingFor.push([parseInt(coords[0]), parseInt(coords[1]), coords[2]]);
 			break;
 		}
 	}

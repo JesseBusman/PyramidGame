@@ -146,9 +146,32 @@ function getCell_createIfNotExists(x, y, onlyCreateIfRowExists)
 				// Fetch the account balance
 				var theAccountBalance = new BigNumber(accountBalances[selectedAccountIndex]);
 				
+				// If there are block placements in flight for the currently selected account,
+				// reduce the available balance
+				for (var i=0; i<betsSubmittedAndWaitingFor.length; i++)
+				{
+					var yBeingSubmitted = betsSubmittedAndWaitingFor[i][1];
+					var accountBeingSubmitted = betsSubmittedAndWaitingFor[i][2];
+					console.log("cellDiv.onClick: "+accountBeingSubmitted+" is submitting at y="+yBeingSubmitted);
+					if (accountBeingSubmitted === selectedAccount)
+					{
+						availableBalance = availableBalance.sub(getBetAmountByY(yBeingSubmitted));
+					}
+				}
+				
+				// If the available balance is smaller than 0,
+				// subtract the rest from the account balance:
+				if (availableBalance.comparedTo(new BigNumber(0)) == -1)
+				{
+					theAccountBalance = theAccountBalance.add(availableBalance);
+					availableBalance = new BigNumber(0);
+				}
+				
 				// Calculate the amount of ETH the user needs to send to the contract
 				// to place a block at the clicked location
 				var transactionAmount = null;
+				
+				// If there is a withdrawal in flight, supply the full amount
 				if (accountsBalanceBeingWithdrawn[selectedAccountIndex] === true)
 				{
 					console.log("The withdrawable balance of account "+selectedAccount+" is being withdraw. Therefore, to place a block, we need to provide the transaction with the full bet amount. We can't use any withdrawable balance, because it may be gone before the bet transaction goes through.");
@@ -205,10 +228,10 @@ function getCell_createIfNotExists(x, y, onlyCreateIfRowExists)
 						// the waitingForConfirmationAnimation should be added again
 						var confirmingCoords = readCookie("confirmingCoords");
 						if (confirmingCoords === null) confirmingCoords = "";
-						confirmingCoords += x+"_"+y+"__";
-						createCookie("confirmingCoords", confirmingCoords, 1);
+						confirmingCoords += x+"_"+y+"_"+selectedAccount+"__";
+						createCookie("confirmingCoords", confirmingCoords, 5 * 60);
 						
-						betsSubmittedAndWaitingFor.push([x, y]);
+						betsSubmittedAndWaitingFor.push([x, y, selectedAccount]);
 						console.log("betsSubmittedAndWaitingFor="+JSON.stringify(betsSubmittedAndWaitingFor));
 						updateGame();
 						updateAccountBalance(fromAccountIndex);

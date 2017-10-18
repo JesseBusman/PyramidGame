@@ -103,12 +103,12 @@ chatboxArrow.addEventListener("click", function(e){
 	if (!connected) return;
 	if (showingChatbox)
 	{
-		createCookie("showChatbox", "no", 100);
+		createCookie("showChatbox", "no", 100 * 24 * 60 * 60);
 		hideChatbox();
 	}
 	else
 	{
-		createCookie("showChatbox", "yes", 100);
+		createCookie("showChatbox", "yes", 100 * 24 * 60 * 60);
 		showChatbox();
 	}
 });

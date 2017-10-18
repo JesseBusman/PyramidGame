@@ -238,12 +238,12 @@ accountBarArrow.addEventListener("click", function(e){
 	if (!connected) return;
 	if (showingAccountBar)
 	{
-		createCookie("showAccountBar", "no", 100);
+		createCookie("showAccountBar", "no", 100 * 24 * 60 * 60);
 		hideAccountBar();
 	}
 	else
 	{
-		createCookie("showAccountBar", "yes", 100);
+		createCookie("showAccountBar", "yes", 100 * 24 * 60 * 60);
 		showAccountBar();
 	}
 });
@@ -306,11 +306,14 @@ function createAccountClickedListener(index)
 				accDiv.style.backgroundColor = "";
 			}
 			showingFullAccountList = false;
-			createCookie("selectedAccountIndex", ""+selectedAccountIndex, 100);
+			createCookie("selectedAccountIndex", ""+selectedAccountIndex, 100 * 24 * 60 * 60);
 			
 			// The selected account has changed, so we should reload
 			// the data related to the selected account
+			divWithdrawableBalance.innerHTML = "Loading...";
+			divWithdrawableBalance.setAttribute("title", "");
 			updateWithdrawableBalance();
+			chatboxUsername.innerHTML = "Loading...";
 			updateChatboxUsername();
 			updateChatMessagesLeft();
 		}

@@ -158,8 +158,6 @@ async function updateGame()
 					if (betsSubmittedAndWaitingFor[i][0] == x &&
 					    betsSubmittedAndWaitingFor[i][1] == y)
 					{
-						betsSubmittedAndWaitingFor.splice(i, 1);
-						i--;
 						if (betsSubmittedAndWaitingFor.length == 0 && statusBoxStatus.innerHTML.includes("Block submitted"))
 						{
 							statusBoxStatus.innerHTML = "Block successfully placed";
@@ -168,6 +166,19 @@ async function updateGame()
 							var accountIndex = accounts.indexOf(address);
 							if (accountIndex != -1) updateAccountBalance(accountIndex);
 						}
+						
+						
+						// Update the confirmingCoords cookie to remove these coordinates
+						var oldCookieArr = readCookie("confirmingCoords").split("__");
+						var newCookieString = "";
+						for (var i=0; i<oldCookieArr.length; i++)
+						{
+							if (!oldCookieArr[i].startsWith(""+x+"_"+y)) newCookieString += oldCookieArr[i] + "__";
+						}
+						createCookie("confirmingCoords", newCookieString, 5 * 60);
+						
+						betsSubmittedAndWaitingFor.splice(i, 1);
+						i--;
 					}
 				}
 				

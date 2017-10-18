@@ -205,19 +205,28 @@ async function init()
 		// Loop through blocks that are waiting for confirmation because the
 		// user submitted them and add their coordinates to betsSubmittedAndWaitingFor
 		var confirmingCoords = readCookie("confirmingCoords");
-		var confirmingCoordsArr = confirmingCoords.trim().split("__");
-		for (var i=0; i<confirmingCoordsArr.length; i++)
+		if (confirmingCoords !== null)
 		{
-			if (confirmingCoordsArr[i] == "") continue;
-			var coords = confirmingCoordsArr[i].split("_");
-			betsSubmittedAndWaitingFor.push([parseInt(coords[0]), parseInt(coords[1]), coords[2]]);
-			break;
+			var confirmingCoordsArr = confirmingCoords.trim().split("__");
+			for (var i=0; i<confirmingCoordsArr.length; i++)
+			{
+				if (confirmingCoordsArr[i] == "") continue;
+				var coords = confirmingCoordsArr[i].split("_");
+				if (coords.length === 3 && (typeof coords[2]) === "string" && coords[2].length === 34)
+				{
+					betsSubmittedAndWaitingFor.push([parseInt(coords[0]), parseInt(coords[1]), coords[2]]);
+				}
+				else
+				{
+					console.error("Error in confirmingCoords cookie syntax: "+confirmingCoords);
+				}
+			}
 		}
 	}
 	catch (e)
 	{
-		//console.log("Error in reading confirmingCoords cookie:");
-		//console.error(e);
+		console.log("Error in reading confirmingCoords cookie:");
+		console.error(e);
 	}
 	
 	selectedAccount = null;

@@ -212,7 +212,7 @@ async function init()
 			{
 				if (confirmingCoordsArr[i] == "") continue;
 				var coords = confirmingCoordsArr[i].split("_");
-				if (coords.length === 3 && (typeof coords[2]) === "string" && coords[2].length === 34)
+				if (coords.length === 3 && (typeof coords[2]) === "string" && coords[2].length === 42)
 				{
 					betsSubmittedAndWaitingFor.push([parseInt(coords[0]), parseInt(coords[1]), coords[2]]);
 				}

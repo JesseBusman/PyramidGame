@@ -195,7 +195,10 @@ function getCell_createIfNotExists(x, y, onlyCreateIfRowExists)
 				// tell the user the bad news.
 				if (transactionAmount.comparedTo(theAccountBalance) == 1)
 				{
-					alert("Not enough balance in account! "+web3.fromWei(transactionAmount)+" required!");
+					console.log("theAccountBalance = "+web3.fromWei(theAccountBalance));
+					console.log("availableBalance = "+web3.fromWei(availableBalance));
+					console.log("transactionAmount = "+web3.fromWei(transactionAmount));
+					alert("There's not enough balance in account "+selectedAccount+"\r\nAt least "+web3.fromWei(transactionAmount)+" ETH is required");
 					return;
 				}
 				

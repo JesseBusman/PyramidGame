@@ -158,6 +158,8 @@ async function updateGame()
 					if (betsSubmittedAndWaitingFor[i][0] == x &&
 					    betsSubmittedAndWaitingFor[i][1] == y)
 					{
+						console.log("A block was successfully placed! Removing it from the confirmingCoords cookie and from the betsSubmittedAndWaitingFor array...");
+						
 						if (betsSubmittedAndWaitingFor.length == 0 && statusBoxStatus.innerHTML.includes("Block submitted"))
 						{
 							statusBoxStatus.innerHTML = "Block successfully placed";
@@ -171,9 +173,10 @@ async function updateGame()
 						// Update the confirmingCoords cookie to remove these coordinates
 						var oldCookieArr = readCookie("confirmingCoords").split("__");
 						var newCookieString = "";
-						for (var i=0; i<oldCookieArr.length; i++)
+						for (var j=0; j<oldCookieArr.length; j++)
 						{
-							if (!oldCookieArr[i].startsWith(""+x+"_"+y)) newCookieString += oldCookieArr[i] + "__";
+							if (oldCookieArr[j] == "") continue;
+							if (!oldCookieArr[j].startsWith(""+x+"_"+y)) newCookieString += oldCookieArr[j] + "__";
 						}
 						createCookie("confirmingCoords", newCookieString, 5 * 60);
 						
@@ -242,6 +245,7 @@ async function updateAccountBalance(accountIndex)
 				accountsBalanceBeingWithdrawn[accountIndex] = false;
 			}
 		}
+		accountBalances[accountIndex] = bal;
 		
 		var withdrawableBalance = await getCurrentWithdrawableBalanceAsync(gameInstance, accounts[accountIndex]);
 		
@@ -273,7 +277,6 @@ async function updateAccountBalance(accountIndex)
 		}
 		else
 		{
-			accountBalances[accountIndex] = bal;
 			$("accountBalance"+accountIndex).innerHTML = fromWeiRoundedDown(bal);
 			$("accountBalance"+accountIndex).setAttribute("title", ""+web3.fromWei(bal));
 		}

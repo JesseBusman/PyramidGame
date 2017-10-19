@@ -62,6 +62,40 @@ async function updateGame()
 			
 			newBlockAddresses = await Promise.all(newBlockAddresses);
 			
+			addBlockToLoadingBar();
+			
+			if (initializing && !errorDuringInitialization)
+			{
+				$("statusBoxStatus").innerHTML = "Loading usernames...";
+			}
+			
+			// Load any new usernames we need:
+			var usernames = [];
+			var loadingUsernameAddresses = [];
+			for (var i=pyramidTotalBlocks; i<newTotalBlocks; i++)
+			{
+				// If we already have this address' username, skip it
+				if (addressesToUsernames.hasOwnProperty(newBlockAddresses[i])) continue;
+				
+				// If we already going to load this address' username, skip it
+				if (loadingUsernameAddresses.includes(newBlockAddresses[i])) continue;
+				
+				usernames[i] = getUsernameByAddressAsync(gameInstance, newBlockAddresses[i]);
+				loadingUsernameAddresses.push(newBlockAddresses[i]);
+			}
+			usernames = await Promise.all(usernames);
+			
+			for (var i=pyramidTotalBlocks; i<newTotalBlocks; i++)
+			{
+				if (usernames[i])
+				{
+					var u = decodeUTF8hex(usernames[i]);
+					if (u.length == 0) continue;
+					addressesToUsernames[newBlockAddresses[i]] = u;
+					console.log("Loaded username "+u+" for address "+newBlockAddresses[i]);
+				}
+			}
+			
 			// Loop over all the new blocks and update the game state
 			while (pyramidTotalBlocks < newTotalBlocks)
 			{
@@ -111,7 +145,7 @@ async function updateGame()
 				});
 				
 				// If the user clicks on an account picture, open etherscan in a new window
-				betAccountPicture.setAttribute("title", address.toString()+"\r\nClick to view on etherscan.io");
+				betAccountPicture.setAttribute("title", (addressesToUsernames.hasOwnProperty(address) ? (addressesToUsernames[address]+"\r\n") : "")+address.toString()+"\r\nClick to view on etherscan.io");
 				betAccountPicture.addEventListener("click", (function(clickedAddress){return (function(e){
 					window.open("https://etherscan.io/address/"+clickedAddress.toString());
 				});})(address.toString()));

@@ -95,6 +95,10 @@ var sendingChatMessage = false;
 var addressesWaitingForUsername = [];
 
 
+/**** Usernames ****/
+var addressesToUsernames = {};
+
+
 /**** Status box elements ****/
 
 var statusBox = $("statusBox");

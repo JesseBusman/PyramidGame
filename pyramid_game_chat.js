@@ -229,14 +229,25 @@ async function updateChatMessages()
 		// after adding all the new chat messages
 		var shouldScrollDown = chatMessagesDiv.scrollY == chatMessagesDiv.scrollHeight || currentTotalChatMessages == 0;
 		
+		// Loop over all the new chat messages and load their data simultaneously:
+		var newChatMessagesIsCensored = [];
+		var newChatMessagesMsg = [];
+		for (var i=currentTotalChatMessages; i<newTotalChatMessages; i++)
+		{
+			newChatMessagesIsCensored[i] = isChatMessageCensored(gameInstance, i);
+			newChatMessagesMsg[i] = getChatMessageAtIndexAsync(gameInstance, i);
+		}
+		newChatMessagesIsCensored = await Promise.all(newChatMessagesIsCensored);
+		newChatMessagesMsg = await Promise.all(newChatMessagesMsg);
+		
 		// Loop over all the new chat messages and add them to the UI
 		for (; currentTotalChatMessages<newTotalChatMessages; currentTotalChatMessages++)
 		{
 			// Check in the blockchain if the chat message has been censored by the administrator
-			var isCensored = await isChatMessageCensored(gameInstance, currentTotalChatMessages);
+			var isCensored = newChatMessagesIsCensored[currentTotalChatMessages];
 			
 			// Get the chat message username, address and message
-			var msg = await getChatMessageAtIndexAsync(gameInstance, currentTotalChatMessages);
+			var msg = newChatMessagesMsg[currentTotalChatMessages];
 			
 			// If this chat message was placed by the current user,
 			// update the status box message in the top left corner

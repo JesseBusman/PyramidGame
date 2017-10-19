@@ -194,16 +194,6 @@ async function updateGame()
 					{
 						console.log("A block was successfully placed! Removing it from the confirmingCoords cookie and from the betsSubmittedAndWaitingFor array...");
 						
-						if (betsSubmittedAndWaitingFor.length == 0 && statusBoxStatus.innerHTML.includes("Block submitted"))
-						{
-							statusBoxStatus.innerHTML = "Block successfully placed";
-							updateWithdrawableBalance();
-							updateChatMessagesLeft();
-							var accountIndex = accounts.indexOf(address);
-							if (accountIndex != -1) updateAccountBalance(accountIndex);
-						}
-						
-						
 						// Update the confirmingCoords cookie to remove these coordinates
 						var oldCookieArr = readCookie("confirmingCoords").split("__");
 						var newCookieString = "";
@@ -215,6 +205,16 @@ async function updateGame()
 						createCookie("confirmingCoords", newCookieString, 5 * 60);
 						
 						betsSubmittedAndWaitingFor.splice(i, 1);
+						
+						if (betsSubmittedAndWaitingFor.length == 0 && statusBoxStatus.innerHTML.includes("Block submitted"))
+						{
+							statusBoxStatus.innerHTML = "Block successfully placed";
+							updateWithdrawableBalance();
+							updateChatMessagesLeft();
+							var accountIndex = accounts.indexOf(address);
+							if (accountIndex != -1) updateAccountBalance(accountIndex);
+						}
+						
 						i--;
 					}
 				}

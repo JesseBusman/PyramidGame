@@ -417,6 +417,15 @@ async function init()
 		
 		addBlockToLoadingBar();
 		
+		if (initializing && !errorDuringInitialization)
+		{
+			$("statusBoxStatus").innerHTML = "Loading chatbox...";
+		}
+		
+		await updateChatMessages();
+		
+		addBlockToLoadingBar();
+		
 		setTimeout(function(){
 			document.body.scrollY = document.body.scrollHeight;
 			document.body.scrollX = pyramidHighestYonInitXcoord * 150;
@@ -555,6 +564,9 @@ window.addEventListener("load", function(e){
 		
 		// Update the game to check for new blocks
 		updateGame();
+		
+		// Check for new chat messages
+		updateChatMessages();
 		
 		// If the user uses MetaMask, and the first account is suddenly
 		// different, reload the accounts:

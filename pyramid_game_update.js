@@ -241,13 +241,6 @@ async function updateGame()
 			}
 		}
 		
-		if (initializing && !errorDuringInitialization)
-		{
-			$("statusBoxStatus").innerHTML = "Loading chatbox...";
-		}
-		
-		await updateChatMessages();
-		
 		updateGameIsRunning = false;
 	}
 	catch (e)

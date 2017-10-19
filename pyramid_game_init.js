@@ -413,7 +413,14 @@ async function init()
 		
 		addBlockToLoadingBar();
 		
-		await updateGame();
+		// Initialize these five things simultaneously
+		var updateGamePromise = updateGame();
+		var updateChatMessagesPromise = updateChatMessages();
+		var updateWithdrawableBalancePromise = updateWithdrawableBalance();
+		var updateChatboxUsernamePromise = updateChatboxUsername();
+		var updateChatMessagesLeftPromise = updateChatMessagesLeft();
+		
+		await updateGamePromise;
 		
 		addBlockToLoadingBar();
 		
@@ -422,7 +429,7 @@ async function init()
 			$("statusBoxStatus").innerHTML = "Loading chatbox...";
 		}
 		
-		await updateChatMessages();
+		await updateChatMessagesPromise;
 		
 		addBlockToLoadingBar();
 		
@@ -431,12 +438,12 @@ async function init()
 			document.body.scrollX = pyramidHighestYonInitXcoord * 150;
 		}, 250);
 		
-		await updateWithdrawableBalance();
+		await updateWithdrawableBalancePromise;
 		
 		addBlockToLoadingBar();
 		
-		await updateChatboxUsername();
-		await updateChatMessagesLeft();
+		await updateChatboxUsernamePromise;
+		await updateChatMessagesLeftPromise;
 		
 		addBlockToLoadingBar();
 		

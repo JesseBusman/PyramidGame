@@ -36,6 +36,7 @@
 	text-align: center;
 	color: white;
 	padding-bottom: 10px;
+	font-size: 11pt;
 }
 
 #chatboxUsername
@@ -45,6 +46,7 @@
 	top: -27px;
 	margin-bottom: -25px;
 	width: 110px;
+	font-size: 11pt;
 }
 #chatboxUsername > a
 {
@@ -55,7 +57,7 @@
 {
 	margin-top: 15px;
 	width: 100%;
-	font-size: 12pt;
+	font-size: 11pt;
 }
 
 #chatMessagesDiv
@@ -68,6 +70,7 @@
 	vertical-align: bottom;
 	display: block;
 	padding: 10px 10px 10px 10px;
+	font-size: 11pt;
 }
 
 /* Sender icon + (Username + Message) */
@@ -86,7 +89,7 @@
 
 #chatMessagesDiv > div:last-child
 {
-	margin-bottom: 50px;
+	margin-bottom: 30px;
 }
 
 /* Sender icon */
@@ -100,7 +103,7 @@
 #chatMessagesDiv > div > div
 {
 	display: inline-block;
-	width: 230px;
+	width: 260px;
 	word-wrap: break-word;
 	white-space: normal;
 	vertical-align: middle;
@@ -115,9 +118,10 @@
 }
 
 /* Message */
-#chatMessagesDiv > div > div > div:first-child
+#chatMessagesDiv > div > div > div:nth-child(2)
 {
 	display: block;
+	font-size: 10pt;
 }
 
 
@@ -146,7 +150,7 @@
 		opacity: 1.0;
 		width: var(--chat-message-width);
 		max-height: 200px;
-		font-size: 12pt;
+		font-size: 11pt;
 	}
 }
 .newChatMessageAnimation

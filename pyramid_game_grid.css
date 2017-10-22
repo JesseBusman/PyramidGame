@@ -50,7 +50,7 @@
 	margin: 0px; /* Don't add margin! It will either screw up the animations, or add a shit-ton of unnecessary extra space at the top*/
 	padding: 0px;
 	outline: 0;
-	font-size: 12pt;
+	font-size: 11pt;
 }
 
 /* Block type: placed */

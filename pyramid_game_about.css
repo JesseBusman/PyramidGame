@@ -8,6 +8,7 @@
 	padding: 20px 20px 30px 20px;
 	opacity: 0.8;
 	text-align: center;
+	font-size: 14pt;
 }
 #largeAboutBox > div
 {
@@ -21,7 +22,7 @@
 #largeAboutBox > div > table td
 {
 	padding: 10px 30px 0px 30px;
-	font-size: 16pt;
+	font-size: 14pt;
 	min-width: 170px;
 }
 body
@@ -34,6 +35,6 @@ body
 }
 #aboutText
 {
-	font-size: 16pt;
+	font-size: 14pt;
 	padding-right: 50px;
 }

@@ -39,12 +39,12 @@
 
 *
 {
-	font-family: "Times New Roman";
+	font-family: "Arial";
 }
 
 #title
 {
-	font-family: EgyptianFont, "Times New Roman";
+	font-family: EgyptianFont, "Arial";
 }
 
 /* Remove default margins & paddings from html & body */

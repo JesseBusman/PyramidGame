@@ -96,6 +96,8 @@ async function updateGame()
 				}
 			}
 			
+			totalBlocksSpan.innerHTML = "" + newTotalBlocks;
+			
 			// Loop over all the new blocks and update the game state
 			while (pyramidTotalBlocks < newTotalBlocks)
 			{

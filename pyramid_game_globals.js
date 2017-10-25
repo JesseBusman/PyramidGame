@@ -109,6 +109,11 @@ var statusBoxStatus = $("statusBoxStatus");
 var statusBoxLoadingBar = $("statusBoxLoadingBar");
 
 
+/**** Statistics ****/
+
+var totalBlocksSpan = $("totalBlocks");
+
+
 /**** Pyramid field elements ****/
 var pyramidField = $("pyramidField");
 

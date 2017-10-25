@@ -211,6 +211,11 @@ async function updateChatMessages()
 	// If there are new messages...
 	else
 	{
+		// If the chatbox is already scrolled all the way down,
+		// we should scroll it down all the way down again
+		// after adding all the new chat messages
+		var shouldScrollDown = chatMessagesDiv.scrollY == chatMessagesDiv.scrollHeight || currentTotalChatMessages == 0;
+		
 		if (currentTotalChatMessages == null)
 		{
 			// We need the last 20 (or less) chat messages!
@@ -223,11 +228,6 @@ async function updateChatMessages()
 		}
 		
 		console.log("Adding chat messages from index "+currentTotalChatMessages+" to (excl.) index "+newTotalChatMessages);
-		
-		// If the chatbox is already scrolled all the way down,
-		// we should scroll it down all the way down again
-		// after adding all the new chat messages
-		var shouldScrollDown = chatMessagesDiv.scrollY == chatMessagesDiv.scrollHeight || currentTotalChatMessages == 0;
 		
 		// Loop over all the new chat messages and load their data simultaneously:
 		var newChatMessagesIsCensored = [];

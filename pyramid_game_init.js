@@ -580,7 +580,6 @@ window.addEventListener("load", function(e){
 		if (web3.currentProvider.isMetaMask === true)
 		{
 			var newAccounts = await getAccountsAsync();
-			console.log("newAccounts = "+newAccounts);
 			if (newAccounts.length != accounts.length ||
 			    (newAccounts.length >= 1 && newAccounts[0] != accounts[0]))
 			{

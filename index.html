@@ -28,7 +28,7 @@
 <body>
 
 <!-- Force this image to load before onload is called -->
-<img src="https://jessebusman.github.io/PyramidGame/stien_twa.png" style="position: fixed; left: -10000px; top: 0px;" alt="Ignore this, blind person"/>
+<img src="stien_twa.png" style="position: fixed; left: -10000px; top: 0px;" alt="Ignore this, blind person"/>
 
 <!-- Top bar -->
 <div id="titleBar">
@@ -41,8 +41,13 @@
 	<div id="statusBoxLoadingBar"></div>
 </div>
 <div id="aboutBox">
-	<div>Copyright &copy; 2017</div>
+	<div>Total blocks: <span id="totalBlocks"></span></div>
+	<!--<a href="#" onclick="">Statistics</a>-->
 	<a href="about.html" target="_blank">About</a>
+	<div>Copyright &copy; 2017</div>
+</div>
+<div id="statisticsBox">
+	Total blocks: <span id="totalBlocks">?</span>
 </div>
 
 <!-- Account selector & Withdrawable balance -->

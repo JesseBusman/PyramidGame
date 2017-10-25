@@ -14,6 +14,13 @@ async function letUserRegisterUsername()
 {
 	var theAccount = selectedAccount;
 	
+	// If the user already submitted a username, don't let them send a second tx.
+	if (addressesWaitingForUsername.includes(theAccount))
+	{
+		alert("You have already submitted a username for this address. Please wait until it is confirmed by the blockchain.");
+		return;
+	}
+	
 	var username = "";
 	while (true)
 	{

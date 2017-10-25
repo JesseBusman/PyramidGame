@@ -103,6 +103,13 @@ async function updateGame()
 				
 				// Extract the x & y coordinates from the contract response
 				coords = parseInt(coords.toString());
+				
+				if (coords === 0 || coords === null)
+				{
+					initializationFailedBecauseOfIllegalContractOutput = true;
+					throw "Error: We received all-zero coordinates from block index "+pyramidTotalBlocks+"!";
+				}
+				
 				var x = (coords >> 16) & 0xFFFF;
 				var y = coords & 0xFFFF;
 				

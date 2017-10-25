@@ -39,6 +39,12 @@ function notConnected()
 		statusBoxStatus.innerHTML = "Your Ethereum client is not synchronized:<br/>It's about "+initializingFailedBecauseNotSyncedBlocksBehind+" blocks behind.<br/><br/>Please wait until it has synchronized more.";
 	}
 	
+	else if (initializationFailedBecauseOfIllegalContractOutput === true)
+	{
+		connected = true;
+		statusBoxStatus.innerHTML = "An unknown error occurred!<br/><br/><span style='font-size: 15pt;'>Technical data:<br/>Illegal contract output: We received 0x000000 from the contract where it must be non-zero!</span><br/><br/>You can contact the administrator at:<br/>pyramidgame@jesbus.com";
+	}
+	
 	else if (initializingFailedBecauseNoAccounts)
 	{
 		connected = true;
@@ -174,6 +180,7 @@ async function init()
 	initializingFailedBecauseNoAccounts = false;
 	initializingFailedBecauseWrongNetwork = false;
 	initializingFailedBecauseNotSyncedBlocksBehind = null;
+	initializationFailedBecauseOfIllegalContractOutput = false;
 	initializing = true;
 	pyramidBottomLayerWei = null;
 	errorDuringInitialization = false;

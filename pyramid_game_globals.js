@@ -52,6 +52,7 @@ var errorDuringInitialization = false;
 var initializingFailedBecauseNoAccounts = false;
 var initializingFailedBecauseWrongNetwork = false;
 var initializingFailedBecauseNotSyncedBlocksBehind = null;
+initializationFailedBecauseOfIllegalContractOutput = false;
 var connected = false;
 
 

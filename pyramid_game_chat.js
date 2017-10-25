@@ -198,7 +198,7 @@ chatMessageBox.addEventListener("keydown", function(e){
 
 // This function will check if there are any new chat messages available.
 // If so, it will display them.
-// If there are more than 20, it will display the last 20.
+// If there are more than MAX_DISPLAYED_CHAT_MESSAGES, it will display the last MAX_DISPLAYED_CHAT_MESSAGES.
 async function updateChatMessages()
 {
 	// Fetch the current amount of chat message from the Ethereum blockchain
@@ -218,13 +218,13 @@ async function updateChatMessages()
 		
 		if (currentTotalChatMessages == null)
 		{
-			// We need the last 20 (or less) chat messages!
-			currentTotalChatMessages = Math.max(0, newTotalChatMessages-20);
+			// We need the last MAX_DISPLAYED_CHAT_MESSAGES (or less) chat messages!
+			currentTotalChatMessages = Math.max(0, newTotalChatMessages-MAX_DISPLAYED_CHAT_MESSAGES);
 		}
 		else
 		{
-			// We need no more than the last 20 chat messages!
-			currentTotalChatMessages = Math.max(currentTotalChatMessages, newTotalChatMessages-20);
+			// We need no more than the last MAX_DISPLAYED_CHAT_MESSAGES chat messages!
+			currentTotalChatMessages = Math.max(currentTotalChatMessages, newTotalChatMessages-MAX_DISPLAYED_CHAT_MESSAGES);
 		}
 		
 		console.log("Adding chat messages from index "+currentTotalChatMessages+" to (excl.) index "+newTotalChatMessages);

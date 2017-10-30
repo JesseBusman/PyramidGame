@@ -67,6 +67,7 @@ var divAccountSelectorContainer = $("divAccountSelectorContainer");
 var divWithdrawableBalanceContainer = $("divWithdrawableBalanceContainer");
 var divWithdrawableBalance = $("divWithdrawableBalance");
 var btnWithdraw = $("btnWithdraw");
+var btnWithdrawPart = $("btnWithdrawPart");
 
 
 /**** Account bar state ****/

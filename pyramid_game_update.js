@@ -250,6 +250,14 @@ async function updateGame()
 			}
 		}
 		
+		if (initializing)
+		{
+			setTimeout(function(){
+				console.log("Scrolling to bottom...");
+				window.scrollTo(0, document.body.scrollHeight + 1000);
+			}, 600);
+		}
+		
 		updateGameIsRunning = false;
 	}
 	catch (e)
@@ -275,10 +283,18 @@ async function updateAccountBalance(accountIndex)
 			console.log("The account balance of "+accounts[accountIndex]+" changed from "+accountBalances[accountIndex]+" to "+bal);
 			await updateWithdrawableBalance();
 			
-			if (accountsBalanceBeingWithdrawn[accountIndex] === true)
+			// If the account balance increased, and there was a withdrawal for that account in progress, we now consider it completed by the amount the account balance increased.
+			if (bal.comparedTo(accountBalances[accountIndex]) == 1)
 			{
-				console.log("There was a withdrawal for that account in progress, we now consider it completed.");
-				accountsBalanceBeingWithdrawn[accountIndex] = false;
+				if (accountsBalanceBeingWithdrawn[accountIndex].comparedTo(new BigNumber(0)) != 0)
+				{
+					console.log("There was a withdrawal in flight on "+accounts[accountIndex]+"! We now consider it completed.");
+				}
+				accountsBalanceBeingWithdrawn[accountIndex] = accountsBalanceBeingWithdrawn[accountIndex].sub(bal.sub(accountBalances[accountIndex]));
+				if (accountsBalanceBeingWithdrawn[accountIndex].comparedTo(new BigNumber(0)) == -1)
+				{
+					accountsBalanceBeingWithdrawn[accountIndex] = new BigNumber(0);
+				}
 			}
 		}
 		accountBalances[accountIndex] = bal;
@@ -330,44 +346,38 @@ async function updateWithdrawableBalance()
 {
 	try
 	{
-		// If there's a withdrawal in progress for the selected account, show a 0 withdrawable balance
-		if (accountsBalanceBeingWithdrawn[selectedAccountIndex] === true)
+		var theSelectedAccountIndex = selectedAccountIndex;
+		
+		var balance = await getCurrentWithdrawableBalanceAsync(gameInstance, selectedAccount);
+		
+		// If there's a withdrawal in progress for the selected account, reduce the withdrawable balance by that amount:
+		balance = balance.sub(accountsBalanceBeingWithdrawn[selectedAccountIndex]);
+		
+		// If there are block placements in flight for the currently selected account,
+		// reduce the available balance by the amount that will be spent:
+		for (var i=0; i<betsSubmittedAndWaitingFor.length; i++)
 		{
-			divWithdrawableBalance.innerHTML = "0";
-			divWithdrawableBalance.setAttribute("title", "0");
+			var yBeingSubmitted = betsSubmittedAndWaitingFor[i][1];
+			var accountBeingSubmitted = betsSubmittedAndWaitingFor[i][2];
+			console.log("updateWithdrawableBalance: "+accountBeingSubmitted+" is submitting at y="+yBeingSubmitted);
+			if (accountBeingSubmitted === selectedAccount)
+			{
+				balance = balance.sub(getBetAmountByY(yBeingSubmitted));
+			}
 		}
-		else
+		
+		if (balance.comparedTo(new BigNumber(0)) == -1) balance = new BigNumber(0);
+		
+		// If the user selected a different account while we were loading the withdrawable balance,
+		// quit and start over
+		if (theSelectedAccountIndex != selectedAccountIndex)
 		{
-			var theSelectedAccountIndex = selectedAccountIndex;
-			
-			var balance = await getCurrentWithdrawableBalanceAsync(gameInstance, selectedAccount);
-			
-			// If there are block placements in flight for the currently selected account,
-			// reduce the available balance by the amount that will be spent:
-			for (var i=0; i<betsSubmittedAndWaitingFor.length; i++)
-			{
-				var yBeingSubmitted = betsSubmittedAndWaitingFor[i][1];
-				var accountBeingSubmitted = betsSubmittedAndWaitingFor[i][2];
-				console.log("updateWithdrawableBalance: "+accountBeingSubmitted+" is submitting at y="+yBeingSubmitted);
-				if (accountBeingSubmitted === selectedAccount)
-				{
-					balance = balance.sub(getBetAmountByY(yBeingSubmitted));
-				}
-			}
-			
-			if (balance.comparedTo(new BigNumber(0)) == -1) balance = new BigNumber(0);
-			
-			// If the user selected a different account while we were loading the withdrawable balance,
-			// quit and start over
-			if (theSelectedAccountIndex != selectedAccountIndex)
-			{
-				setTimeout(updateWithdrawableBalance, 10);
-				return;
-			}
-			
-			divWithdrawableBalance.innerHTML = fromWeiRoundedDown(balance.toString());
-			divWithdrawableBalance.setAttribute("title", ""+web3.fromWei(balance));
+			setTimeout(updateWithdrawableBalance, 10);
+			return;
 		}
+		
+		divWithdrawableBalance.innerHTML = fromWeiRoundedDown(balance.toString());
+		divWithdrawableBalance.setAttribute("title", ""+web3.fromWei(balance));
 	}
 	catch (e)
 	{

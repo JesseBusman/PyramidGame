@@ -338,6 +338,11 @@ async function init()
 	
 	try
 	{
+		if (typeof(mist) !== "undefined")
+		{
+			btnWithdrawPart.style.display = "none";
+		}
+		
 		await getNetworkAsync();
 		
 		addBlockToLoadingBar();
@@ -630,3 +635,37 @@ window.addEventListener("scroll", function(e){
 	var horizontalScroll = window.scrollX;
 	document.body.style.backgroundPosition = parseInt(-horizontalScroll/2) + "px 0px";
 });
+
+var currentMouseX = null;
+var currentMouseY = null;
+
+window.addEventListener("mousemove", function(e){
+	currentMouseX = e.clientX;
+	currentMouseY = e.clientY;
+	console.log("mouseMoved: "+currentMouseX);
+});
+
+window.addEventListener("mouseout", function(e){
+	currentMouseX = null;
+	currentMouseY = null;
+	console.log("mouse left screen");
+});
+
+setInterval(function(){
+	if (currentMouseX === null) return;
+	var w = window.innerWidth;
+	var h = window.innerHeight;
+	var minY = 200;
+	if (currentMouseX < 50)
+	{
+		if (showingAccountBar) minY = 480;
+		if (currentMouseY < minY) return;
+		window.scrollBy(-15 * (50 - parseFloat(currentMouseX)) / 50 * Math.min(1, (currentMouseY - minY) / 50), 0);
+	}
+	else if (currentMouseX > w-50)
+	{
+		if (showingChatbox) minY = 480;
+		if (currentMouseY < minY) return;
+		window.scrollBy(15 * (currentMouseX - (w-50)) / 50 * Math.min(1, (currentMouseY - minY) / 50), 0);
+	}
+}, 25);

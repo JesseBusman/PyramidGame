@@ -60,7 +60,7 @@ async function reloadAccounts()
 		});
 		
 		// By default, we assume that there is no withdrawal in flight
-		accountsBalanceBeingWithdrawn[i] = false;
+		accountsBalanceBeingWithdrawn[i] = new BigNumber(0);
 		
 		// Create the UI elements for the account
 		var accountDiv = document.createElement("div");
@@ -144,6 +144,60 @@ async function reloadAccounts()
 	updateChatMessagesLeft();
 }
 
+function withdrawBalance(account, accountIndex, amount)
+{
+	// We now declare to the rest of the system that there is a withdrawal in flight
+	// on the account
+	accountsBalanceBeingWithdrawn[accountIndex] = accountsBalanceBeingWithdrawn[accountIndex].add(amount);
+	
+	// Set the top-right status text
+	statusBoxStatus.innerHTML = "Withdrawing...";
+	
+	// Initiate the withdrawal request to the user's Ethereum client
+	gameInstance.withdrawBalance(
+		amount,
+		{
+			from: account,
+			gas: 50000
+		},
+		(
+			function(err){
+				// If the user canceled the withdrawal request from their Ethereum client
+				if (err != null && (err.message.toString().includes("rejected") || err.message.toString().includes("User denied")))
+				{
+					accountsBalanceBeingWithdrawn[accountIndex] = accountsBalanceBeingWithdrawn[accountIndex].sub(amount);
+					statusBoxStatus.innerHTML = "Withdrawal cancelled";
+					updateWithdrawableBalance();
+					return;
+				}
+				
+				// If there was some other failure
+				if (err != null)
+				{
+					console.log("Not connected because of failure in withdrawBalance():");
+					console.log(err);
+					notConnected();
+					return;
+				}
+				
+				// If the withdrawal transaction has been published to the Ethereum network
+				// (but has not necessarily confirmed in the blockchain yet!)
+				updateWithdrawableBalance();
+				updateAccountBalance(accountIndex);
+				statusBoxStatus.innerHTML = "Withdrawal submitted";
+				
+				// The fact that accountsIsBalanceBeingWithdrawn[accountIndex] is still true
+				// will indicate to the block placement code that there may appear to be a balance,
+				// but we cannot use the balance of this account because a withdrawal for that balance
+				// has been published.
+				
+				// When the account balance changes, we will assume that the withdrawal has been confirmed
+				// in the blockchain and we will reset accountsIsBalanceBeingWithdrawn[accountIndex]
+			}
+		)
+	);
+}
+
 btnWithdraw.addEventListener("click", async function(e){
 	if (!connected)
 	{
@@ -159,69 +213,78 @@ btnWithdraw.addEventListener("click", async function(e){
 		// Fetch the withdrawable balance
 		var bal = await getCurrentWithdrawableBalanceAsync(gameInstance, theSelectedAccount);
 		
+		console.log("In account "+theSelectedAccount+" at index "+theSelectedAccountIndex+" has "+window.web3.fromWei(bal));
+		
 		// If the withdrawable balance is greater than 0....
 		if (bal.comparedTo(new BigNumber(0)) == 1)
 		{
-			// We now declare to the rest of the system that there is a withdrawal in flight
-			// on the account
-			accountsBalanceBeingWithdrawn[theSelectedAccountIndex] = true;
-			
-			// Set the top-right status text
-			statusBoxStatus.innerHTML = "Withdrawing...";
-			
-			console.log("In account "+theSelectedAccount+" at index "+theSelectedAccountIndex+" has "+window.web3.fromWei(bal));
-			
-			// Initiate the withdrawal request to the user's Ethereum client
-			gameInstance.withdrawBalance(
-				bal,
-				{
-					from: theSelectedAccount,
-					gas: 50000
-				},
-				(
-					function(accountIndex){
-						return function(err){
-							// If the user canceled the withdrawal request from their Ethereum client
-							if (err != null && (err.message.toString().includes("rejected") || err.message.toString().includes("User denied")))
-							{
-								accountsBalanceBeingWithdrawn[accountIndex] = false;
-								statusBoxStatus.innerHTML = "Withdrawal cancelled";
-								updateWithdrawableBalance();
-								return;
-							}
-							
-							// If there was some other failure
-							if (err != null)
-							{
-								console.log("Not connected because of failure in withdrawBalance():");
-								console.log(err);
-								notConnected();
-								return;
-							}
-							
-							// If the withdrawal transaction has been published to the Ethereum network
-							// (but has not necessarily confirmed in the blockchain yet!)
-							updateWithdrawableBalance();
-							updateAccountBalance(accountIndex);
-							statusBoxStatus.innerHTML = "Withdrawal submitted";
-							
-							// The fact that accountsIsBalanceBeingWithdrawn[accountIndex] is still true
-							// will indicate to the block placement code that there may appear to be a balance,
-							// but we cannot use the balance of this account because a withdrawal for that balance
-							// has been published.
-							
-							// When the account balance changes, we will assume that the withdrawal has been confirmed
-							// in the blockchain and we will reset accountsIsBalanceBeingWithdrawn[accountIndex]
-						}
-					}
-				) (theSelectedAccountIndex)
-			);
+			withdrawBalance(theSelectedAccount, theSelectedAccountIndex, bal);
 		}
 		
 		// If the withdrawable balance is not greater than 0...
 		else
 		{
 			alert("There's nothing to withdraw in the selected account!");
+		}
+	}
+	catch (e)
+	{
+		console.log("Not connected because of failure in button withdraw click");
+		console.log(e);
+		notConnected();
+	}
+});
+
+btnWithdrawPart.addEventListener("click", async function(e){
+	if (!connected)
+	{
+		alert("Not connected to the Ethereum network! Please connect and/or refresh this page.");
+		return;
+	}
+	try
+	{
+		// Store the selected account at the time the button is pressed
+		var theSelectedAccount = selectedAccount;
+		var theSelectedAccountIndex = selectedAccountIndex;
+		
+		// Fetch the withdrawable balance
+		var bal = await getCurrentWithdrawableBalanceAsync(gameInstance, theSelectedAccount);
+		
+		if (bal.comparedTo(new BigNumber(0)) == 0)
+		{
+			alert("There's nothing to withdraw in the selected account!");
+			return;
+		}
+			
+		console.log("In account "+theSelectedAccount+" at index "+theSelectedAccountIndex+" has "+window.web3.fromWei(bal));
+		
+		var amount = prompt("How much would you like to withdraw? Please enter an amount of ETH.\r\nThe maximum is "+window.web3.fromWei(bal), "");
+		
+		if (amount === false || amount === "" || amount === null) return;
+		
+		try
+		{
+			amount = window.web3.toWei(amount.replace("ETH", "").replace("eth", "").trim());
+		}
+		catch (e)
+		{
+			alert("You did not enter a valid number!");
+			return;
+		}
+		
+		// If the withdrawable balance is greater than the amount to withdraw....
+		if (bal.comparedTo(new BigNumber(amount)) == 1)
+		{
+			withdrawBalance(theSelectedAccount, theSelectedAccountIndex, amount);
+		}
+		
+		// If the withdrawable balance is not greater than 0...
+		else
+		{
+			if (confirm("There's not that much available to withdraw!\r\nWould you like to withdraw your full balance?"))
+			{
+				btnWithdraw.click();
+			}
 		}
 	}
 	catch (e)

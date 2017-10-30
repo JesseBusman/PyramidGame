@@ -159,6 +159,11 @@ function getCell_createIfNotExists(x, y, onlyCreateIfRowExists)
 					}
 				}
 				
+				// If there are withdrawals in flight for the currently selected account,
+				// reduce the available balance
+				availableBalance = availableBalance.sub(accountsBalanceBeingWithdrawn[selectedAccountIndex]);
+				//console.log("The withdrawable balance of account "+selectedAccount+" is being withdraw. Therefore, to place a block, we need to provide the transaction with the full bet amount. We can't use any withdrawable balance, because it may be gone before the bet transaction goes through.");
+				
 				// If the available balance is smaller than 0,
 				// subtract the rest from the account balance:
 				if (availableBalance.comparedTo(new BigNumber(0)) == -1)
@@ -171,16 +176,9 @@ function getCell_createIfNotExists(x, y, onlyCreateIfRowExists)
 				// to place a block at the clicked location
 				var transactionAmount = null;
 				
-				// If there is a withdrawal in flight, supply the full amount
-				if (accountsBalanceBeingWithdrawn[selectedAccountIndex] === true)
-				{
-					console.log("The withdrawable balance of account "+selectedAccount+" is being withdraw. Therefore, to place a block, we need to provide the transaction with the full bet amount. We can't use any withdrawable balance, because it may be gone before the bet transaction goes through.");
-					transactionAmount = betAmountForThisCell;
-				}
-				
 				// If the available balance is greater than or equal to the bet amount,
 				// the user doesn't need to send any ETH to the contract.
-				else if (availableBalance.comparedTo(betAmountForThisCell) != -1)
+				if (availableBalance.comparedTo(betAmountForThisCell) != -1)
 				{
 					transactionAmount = new BigNumber(0);
 				}

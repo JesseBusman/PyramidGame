@@ -206,12 +206,15 @@
 }
 #divWithdrawableBalance
 {
-	margin-top: 20px;
+	margin-top: 15px;
 }
 #divWithdrawableBalanceAndButton > input[type=button]
 {
 	position: relative;
 	bottom: 10px;
+	margin-top: 9px;
+	margin-left: 10px;
+	margin-right: 10px;
 }
 
 /***************************************************************/

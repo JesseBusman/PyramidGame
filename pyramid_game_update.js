@@ -25,6 +25,18 @@ async function updateGame()
 		{
 			console.log("There are no new blocks.");
 		}
+		
+		// If there are suddenly 0 blocks, even though we previously had > 0,
+		// it probably means that Mist screwed up by returning invalid data.
+		// Show the user an appropriate error message
+		else if (pyramidTotalBlocks > 0 && newTotalBlocks == 0)
+		{
+			initializationFailedBecauseOfIllegalContractOutput = true;
+			connected = false;
+			updateGameIsRunning = false;
+			notConnected();
+			return;
+		}
 		else
 		{
 			console.log("There are "+(newTotalBlocks-pyramidTotalBlocks)+" new blocks!");

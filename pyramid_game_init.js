@@ -55,13 +55,13 @@ function notConnected()
 		
 		else if (typeof(mist) !== "undefined")
 		{
-			statusBoxStatus.innerHTML = "No accounts found! Maybe you haven't given this app permission to view accounts? Mist should have a '<b style='color: rgb(130, 165, 205); background-color: white; padding: 5px; font-size: 10pt;margin: 0px 5px 0px 5px;font-family: Arial;'>CONNECT</b>' button to the top-right of this page.";
+			statusBoxStatus.innerHTML = "No accounts found! Maybe you haven't given this app permission to view accounts? Mist should have a '<b style='color: rgb(130, 165, 205); background-color: white; padding: 5px; font-size: 10pt;margin: 0px 5px 0px 5px;font-family: Arial;'>CONNECT</b>' button to the top-right of this page.<br/><br/>If you believe this is an error, you can contact the administrator at: info@jesbus.com";
 		}
 		
 		// Unknown client
 		else
 		{
-			statusBoxStatus.innerHTML = "No accounts found! Maybe you haven't logged in to your Ethereum client yet, or maybe you haven't given this app permission to view accounts?";
+			statusBoxStatus.innerHTML = "No accounts found! Maybe you haven't logged in to your Ethereum client yet, or maybe you haven't given this app permission to view accounts?<br/><br/>If you believe this is an error, you can contact the administrator at: info@jesbus.com";
 		}
 		
 		// Keep polling until we can access accounts
@@ -77,11 +77,11 @@ function notConnected()
 	// If the user is using Chrome, recommend MetaMask
 	else if (isChrome())
 	{
-		statusBoxStatus.innerHTML = "Could not connect to the Ethereum network!<br/><br/>If you haven't installed Ethereum yet, we recommend the <a href='#' onclick='chrome.webstore.install(\"https://chrome.google.com/webstore/detail/nkbihfbeogaeaoehlefnkodbefgpgknn\");'>MetaMask Chrome plugin.</a><br/><br/>If you have already installed Ethereum, please make sure it is running, it is synchronized and this app has permission to access it. You may also have to log in.";
+		statusBoxStatus.innerHTML = "Could not connect to the Ethereum network!<br/><br/>If you haven't installed Ethereum yet, we recommend the <a href='#' onclick='chrome.webstore.install(\"https://chrome.google.com/webstore/detail/nkbihfbeogaeaoehlefnkodbefgpgknn\");'>MetaMask Chrome plugin.</a><br/><br/>If you have already installed Ethereum, please make sure it is running, it is synchronized and this app has permission to access it.<br/><br/>You can contact the administrator at: info@jesbus.com";
 	}
 	else
 	{
-		statusBoxStatus.innerHTML = "Could not connect to the Ethereum network!<br/><br/>If you haven't installed Ethereum yet, we recommend using the Google Chrome browser with the MetaMask plugin, or installing <a href='https://parity.io/' target='_blank'>Parity</a><br/><br/>If you have already installed Ethereum, please make sure it is running, it is synchronized and this app has permission to access it. You may also have to log in.";
+		statusBoxStatus.innerHTML = "Could not connect to the Ethereum network!<br/><br/>If you haven't installed Ethereum yet, we recommend using the Google Chrome browser with the MetaMask plugin, or installing <a href='https://parity.io/' target='_blank'>Parity</a><br/><br/>If you have already installed Ethereum, please make sure it is running, it is synchronized and this app has permission to access it.<br/><br/>You can contact the administrator at: info@jesbus.com";
 	}
 	
 	statusBox.classList.add("statusBoxMiddleOfScreen");

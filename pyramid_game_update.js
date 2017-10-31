@@ -23,7 +23,6 @@ async function updateGame()
 		// If there is nothing to update, quit
 		if (pyramidTotalBlocks == newTotalBlocks)
 		{
-			console.log("There are no new blocks.");
 		}
 		
 		// If there are suddenly 0 blocks, even though we previously had > 0,
@@ -54,7 +53,17 @@ async function updateGame()
 			// Loop over all the new blocks and fetch their coordinates asynchronously
 			for (var i=pyramidTotalBlocks; i<newTotalBlocks; i++)
 			{
-				newBlockCoordinates[i] = getBlockCoordinatesAtIndexAsync(gameInstance, i);
+				// If we can load it from cache.js, do it:
+				if (i < CACHED_BLOCK_COORDINATES.length)
+				{
+					newBlockCoordinates[i] = CACHED_BLOCK_COORDINATES[i];
+				}
+				
+				// otherwise, load it from the blockchain through web3.js
+				else
+				{
+					newBlockCoordinates[i] = getBlockCoordinatesAtIndexAsync(gameInstance, i);
+				}
 			}
 			
 			newBlockCoordinates = await Promise.all(newBlockCoordinates);
@@ -69,7 +78,17 @@ async function updateGame()
 			// Loop over all the new blocks and fetch their addresses asynchronously
 			for (var i=pyramidTotalBlocks; i<newTotalBlocks; i++)
 			{
-				newBlockAddresses[i] = getBlockAddress(gameInstance, newBlockCoordinates[i]);
+				// If we can load it from cache.js, do it:
+				if (i < CACHED_BLOCK_ADDRESSES.length)
+				{
+					newBlockAddresses[i] = CACHED_BLOCK_ADDRESSES[i];
+				}
+				
+				// otherwise, load it from the blockchain through web3.js
+				else
+				{
+					newBlockAddresses[i] = getBlockAddress(gameInstance, newBlockCoordinates[i]);
+				}
 			}
 			
 			newBlockAddresses = await Promise.all(newBlockAddresses);
@@ -92,7 +111,18 @@ async function updateGame()
 				// If we already going to load this address' username, skip it
 				if (loadingUsernameAddresses.includes(newBlockAddresses[i])) continue;
 				
-				usernames[i] = getUsernameByAddressAsync(gameInstance, newBlockAddresses[i]);
+				// If we can load it from cache.js, do it:
+				if (CACHED_ADDRESSES_TO_USERNAMES.hasOwnProperty(newBlockAddresses[i]))
+				{
+					usernames[i] = encodeUTF8hex(CACHED_ADDRESSES_TO_USERNAMES[newBlockAddresses[i]]);
+				}
+				
+				// ...otherwise, load it from the blockchain through web3.js
+				else
+				{
+					usernames[i] = getUsernameByAddressAsync(gameInstance, newBlockAddresses[i]);
+				}
+				
 				loadingUsernameAddresses.push(newBlockAddresses[i]);
 			}
 			usernames = await Promise.all(usernames);

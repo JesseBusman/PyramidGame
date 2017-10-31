@@ -415,7 +415,12 @@ async function init()
 			statusBoxStatus.innerHTML = "Loading your accounts...";
 		}
 		
-		await reloadAccounts();
+		// Initialize these things simultaneously
+		var reloadAccountsPromise = reloadAccounts();
+		var updateGamePromise = updateGame();
+		var updateChatMessagesPromise = updateChatMessages();
+		
+		await reloadAccountsPromise;
 		
 		if (accounts.length == 0)
 		{
@@ -425,9 +430,7 @@ async function init()
 		
 		addBlockToLoadingBar();
 		
-		// Initialize these five things simultaneously
-		var updateGamePromise = updateGame();
-		var updateChatMessagesPromise = updateChatMessages();
+		// updateWithdrawableBalance, updateChatboxUsername and updateChatMessagesLeft need reloadAccounts to be finished
 		var updateWithdrawableBalancePromise = updateWithdrawableBalance();
 		var updateChatboxUsernamePromise = updateChatboxUsername();
 		var updateChatMessagesLeftPromise = updateChatMessagesLeft();

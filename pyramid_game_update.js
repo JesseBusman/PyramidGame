@@ -265,9 +265,19 @@ async function updateGame()
 		if (initializing)
 		{
 			setTimeout(function(){
-				console.log("Scrolling to bottom...");
-				window.scrollTo(0, document.body.scrollHeight + 1000);
-			}, 600);
+				var rememberedXscrollPos = readCookie("xPos");
+				if (rememberedXscrollPos === null)
+				{
+					console.log("Scrolling the user to a random horizontal position.");
+					rememberedXscrollPos = (Math.random() < 0.5) ? document.body.scrollWidth + 1000 : 0;
+				}
+				
+				window.scroll({
+					top: document.body.scrollHeight + 1000,
+					left: rememberedXscrollPos,
+					behavior: 'smooth'
+				});
+			}, 550);
 		}
 		
 		updateGameIsRunning = false;

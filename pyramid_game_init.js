@@ -642,7 +642,6 @@ var currentMouseY = null;
 window.addEventListener("mousemove", function(e){
 	currentMouseX = e.clientX;
 	currentMouseY = e.clientY;
-	console.log("mouseMoved: "+currentMouseX);
 });
 
 window.addEventListener("mouseout", function(e){
@@ -669,3 +668,25 @@ setInterval(function(){
 		window.scrollBy(15 * (currentMouseX - (w-50)) / 50 * Math.min(1, (currentMouseY - minY) / 50), 0);
 	}
 }, 25);
+
+var scrollPosSaveSkipCounter = 0;
+setInterval(function(){
+	if (pyramidTotalBlocks > 0 &&
+	    connected &&
+		!initializing &&
+		shouldPollForNewBets &&
+		!errorDuringInitialization)
+	{
+		// Skip the first one because we need to wait until animations are finished
+		if (scrollPosSaveSkipCounter < 2)
+		{
+			scrollPosSaveSkipCounter++;
+		}
+		else
+		{
+			// Remember the user's current scroll position
+			console.log("Remembering current scrollpos");
+			createCookie("xPos", ""+window.scrollX, 365*24*60*60);
+		}
+	}
+}, 1000);

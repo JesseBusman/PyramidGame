@@ -258,7 +258,7 @@ async function updateChatMessages()
 			
 			// If this chat message was placed by the current user,
 			// update the status box message in the top left corner
-			if (accounts.indexOf(msg[0]) != -1 && statusBoxStatus.innerHTML.indexOf("chat message confirmation"))
+			if (accounts.indexOf(msg[0]) != -1 && statusBoxStatus.innerHTML.includes("chat message confirmation"))
 			{
 				statusBoxStatus.innerHTML = "Connected";
 			}

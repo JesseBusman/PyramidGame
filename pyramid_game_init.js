@@ -688,7 +688,7 @@ setInterval(function(){
 		else
 		{
 			// Remember the user's current scroll position
-			console.log("Remembering current scrollpos");
+			try{eraseCookie("xPos");}catch(e){}
 			createCookie("xPos", ""+window.scrollX, 365*24*60*60);
 		}
 	}

@@ -150,8 +150,10 @@ async function updateGame()
 				
 				if (coords === 0 || coords === null)
 				{
-					initializationFailedBecauseOfIllegalContractOutput = true;
-					throw "Error: We received all-zero coordinates from block index "+pyramidTotalBlocks+"!";
+					statusBoxStatus.innerHTML = "Lost connection... Re-establishing...";
+					break;
+					//initializationFailedBecauseOfIllegalContractOutput = true;
+					//throw "Error: We received all-zero coordinates from block index "+pyramidTotalBlocks+"!";
 				}
 				
 				var x = (coords >> 16) & 0xFFFF;
@@ -187,6 +189,10 @@ async function updateGame()
 				
 				// Get the address of the sender of this block
 				var address = newBlockAddresses[pyramidTotalBlocks];
+				
+				// Update the pyramidGrid global variable
+				if (y >= pyramidGrid.length) pyramidGrid.push([]); // Add a new row if necessary
+				pyramidGrid[y][x] = address;
 				
 				// Generate the account picture of the person who placed this bet
 				var betAccountPicture = blockies({ // All options are optional
@@ -292,7 +298,7 @@ async function updateGame()
 			}
 		}
 		
-		if (initializing)
+		if (initializing && window.scroll)
 		{
 			setTimeout(function(){
 				var rememberedXscrollPos = readCookie("xPos");

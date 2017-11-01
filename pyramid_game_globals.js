@@ -128,3 +128,4 @@ var pyramidLowestXWithPlacedBlock = null;
 var pyramidHighestYonInit = null;
 var pyramidHighestYonInitXcoord = null;
 var betsSubmittedAndWaitingFor = [];
+var pyramidGrid = [];

@@ -310,7 +310,7 @@ async function updateGame()
 				if (rememberedXscrollPos === null)
 				{
 					console.log("Scrolling the user to a random horizontal position.");
-					rememberedXscrollPos = (Math.random() < 0.5) ? document.body.scrollWidth + 1000 : 0;
+					rememberedXscrollPos = parseInt(Math.random() * document.body.scrollWidth);
 				}
 				
 				window.scroll({

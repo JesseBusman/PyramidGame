@@ -18,6 +18,10 @@ async function updateGame()
 	{
 		// Fetch the current total amount of blocks from the user's Ethereum client
 		var newTotalBlocks = await getTotalAmountOfBlocksAsync(gameInstance);
+		
+		console.log("newTotalBlocks:");
+		console.log(newTotalBlocks);
+		
 		newTotalBlocks = parseInt(newTotalBlocks.toString());
 		
 		// If there is nothing to update, quit
@@ -30,11 +34,12 @@ async function updateGame()
 		// Show the user an appropriate error message
 		else if (pyramidTotalBlocks > 0 && newTotalBlocks == 0)
 		{
-			initializationFailedBecauseOfIllegalContractOutput = true;
-			connected = false;
-			updateGameIsRunning = false;
-			notConnected();
-			return;
+			statusBoxStatus.innerHTML = "Lost connection... Re-establishing...";
+			//initializationFailedBecauseOfIllegalContractOutput = true;
+			//connected = false;
+			//updateGameIsRunning = false;
+			//notConnected();
+			console.error("newTotalBlocks was 0!!!!!!!!!!!!11");
 		}
 		else
 		{
@@ -194,6 +199,9 @@ async function updateGame()
 				if (y >= pyramidGrid.length) pyramidGrid.push([]); // Add a new row if necessary
 				pyramidGrid[y][x] = address;
 				
+				// Create the cell
+				var cellDiv = getCell_createIfNotExists(x, y, false);
+				
 				// Generate the account picture of the person who placed this bet
 				var betAccountPicture = blockies({ // All options are optional
 					seed: address.toString(), // seed used to generate icon data, default: random
@@ -209,9 +217,6 @@ async function updateGame()
 				
 				// Add an animation to the account picture
 				betAccountPicture.classList.add("animateBlockAppear");
-				
-				// Create the cell
-				var cellDiv = getCell_createIfNotExists(x, y, false);
 				
 				// Add the account picture at the start of the cell div
 				cellDiv.insertBefore(betAccountPicture, cellDiv.childNodes[0]);

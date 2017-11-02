@@ -9,6 +9,23 @@
 
 var getCell_createIfNotExistsCounter = 0;
 
+function addNumbersToCell(x, y)
+{
+	var cellDiv = $("cell"+x+"_"+y);
+	
+	var betAmountForThisCell = getBetAmountByY(y);
+	
+	var cellAmountDiv = document.createElement("div");
+	cellAmountDiv.classList.add("cellEthAmount");
+	cellAmountDiv.innerHTML = "- "+web3.fromWei(betAmountForThisCell);
+	cellDiv.appendChild(cellAmountDiv);
+	
+	cellReturnedAmountDiv = document.createElement("div");
+	cellReturnedAmountDiv.classList.add("cellReturnedEthAmount");
+	cellReturnedAmountDiv.innerHTML = "+ ???";
+	cellDiv.appendChild(cellReturnedAmountDiv);
+}
+
 function getCell_createIfNotExists(x, y, onlyCreateIfRowExists)
 {
 	getCell_createIfNotExistsCounter++;
@@ -71,16 +88,6 @@ function getCell_createIfNotExists(x, y, onlyCreateIfRowExists)
 		cellDiv.setAttribute("ypos", y);
 		cellDiv.classList.add("hiddenBlock");
 		
-		var cellAmountDiv = document.createElement("div");
-		cellAmountDiv.classList.add("cellEthAmount");
-		cellAmountDiv.innerHTML = "- "+web3.fromWei(betAmountForThisCell);
-		cellDiv.appendChild(cellAmountDiv);
-		
-		cellReturnedAmountDiv = document.createElement("div");
-		cellReturnedAmountDiv.classList.add("cellReturnedEthAmount");
-		cellReturnedAmountDiv.innerHTML = "+ ???";
-		cellDiv.appendChild(cellReturnedAmountDiv);
-		
 		// If neither the cell to the left nor the cell to the right already existed in the UI ...
 		if (!leftCellDiv && !rightCellDiv)
 		{
@@ -120,6 +127,8 @@ function getCell_createIfNotExists(x, y, onlyCreateIfRowExists)
 		{
 			rowDiv.insertBefore(cellDiv, leftCellDiv.nextSibling);
 		}
+		
+		if (!hideNumbersOnBlocks) addNumbersToCell(x, y);
 		
 		cellDiv.addEventListener("click", async function(e){
 			if (cellDiv.classList.contains("hiddenBlock"))
@@ -294,6 +303,9 @@ function getCell_createIfNotExists(x, y, onlyCreateIfRowExists)
 	if (justCreatedTheCell)
 	{
 		cellDiv.classList.add("animateNewBlockSpace");
+		
+		// Add it to the global registry
+		pyramidHtmlBlockElements.push({"x": x, "y": y, "el": cellDiv});
 	}
 	
 	// If a cell above does not exist yet, create it:
@@ -328,6 +340,8 @@ var updateBlockReturnedEthCounter = 0; // A counter for debugging purposes
 // Update the little + ... ETH text on the block
 async function updateBlockReturnedEth(x, y)
 {
+	if (hideNumbersOnBlocks) return;
+	
 	updateBlockReturnedEthCounter++;
 	if (y < 0) return;
 	var cellDiv = getCell_createIfNotExists(x, y, true);

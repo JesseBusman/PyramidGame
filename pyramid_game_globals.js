@@ -129,3 +129,9 @@ var pyramidHighestYonInit = null;
 var pyramidHighestYonInitXcoord = null;
 var betsSubmittedAndWaitingFor = [];
 var pyramidGrid = [];
+var pyramidHtmlBlockElements = []; // contains objects of the format: {x: [INT], y: [INT], el: [ELEMENT]}
+
+
+/**** Performance options ****/
+var hideNumbersOnBlocks = false;
+var hideBlocksOutsideScreen = false;

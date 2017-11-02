@@ -560,6 +560,89 @@ else
 }
 
 
+
+// Only show blocks that are currently within the screen
+var currentShownBlockXleft = null;
+var currentShownBlockXright = null;
+setInterval(function(){
+	if (hideBlocksOutsideScreen)
+	{
+		var newShownBlockXleft = pyramidLowestXWithPlacedBlock - 1 + Math.floor(window.scrollX / 140);
+		var newShownBlockXright = pyramidLowestXWithPlacedBlock - 1 + Math.floor((window.scrollX + window.innerWidth) / 140);
+		if (currentShownBlockXleft !== newShownBlockXleft ||
+			currentShownBlockXright !== newShownBlockXright)
+		{
+			currentShownBlockXleft = newShownBlockXleft;
+			currentShownBlockXright = newShownBlockXright;
+			var countHidden = 0;
+			var countVisible = 0;
+			for (var i=0; i<pyramidHtmlBlockElements.length; i++)
+			{
+				if (pyramidHtmlBlockElements[i].x < newShownBlockXleft-10 ||
+					pyramidHtmlBlockElements[i].x >= newShownBlockXright+10)
+				{
+					pyramidHtmlBlockElements[i].el.style.visibility = "hidden";
+					countHidden++;
+				}
+				else
+				{
+					pyramidHtmlBlockElements[i].el.style.visibility = "visible";
+					countVisible++;
+				}
+			}
+			console.log("countHidden = "+countHidden);
+			console.log("countVisible = "+countVisible);
+		}
+	}
+}, 300);
+
+
+
+
+// Performance options checkboxes:
+if (readCookie("hideNumbersOnBlocks") === "true")
+{
+	$("cbHideNumbersOnBlocks").checked = true;
+	hideNumbersOnBlocks = true;
+}
+if (readCookie("hideBlocksOutsideScreen") === "true")
+{
+	$("cbHideBlocksOutsideScreen").checked = true;
+	hideBlocksOutsideScreen = true;
+}
+$("cbHideNumbersOnBlocks").addEventListener("change", function(e){
+	hideNumbersOnBlocks = $("cbHideNumbersOnBlocks").checked;
+	createCookie("hideNumbersOnBlocks", hideNumbersOnBlocks?"true":"false", 365 * 24 * 60 * 60);
+	for (var i=0; i<pyramidHtmlBlockElements.length; i++)
+	{
+		var el = pyramidHtmlBlockElements[i].el;
+		if (hideNumbersOnBlocks)
+		{
+			el.removeChild(el.getElementsByClassName("cellEthAmount")[0]);
+			el.removeChild(el.getElementsByClassName("cellReturnedEthAmount")[0]);
+		}
+		else
+		{
+			addNumbersToCell(pyramidHtmlBlockElements[i].x, pyramidHtmlBlockElements[i].y);
+			updateBlockReturnedEth(pyramidHtmlBlockElements[i].x, pyramidHtmlBlockElements[i].y);
+		}
+	}
+});
+$("cbHideBlocksOutsideScreen").addEventListener("change", function(e){
+	hideBlocksOutsideScreen = $("cbHideBlocksOutsideScreen").checked;
+	createCookie("hideBlocksOutsideScreen", hideBlocksOutsideScreen?"true":"false", 365 * 24 * 60 * 60);
+	if (!hideBlocksOutsideScreen)
+	{
+		for (var i=0; i<pyramidHtmlBlockElements.length; i++)
+		{
+			pyramidHtmlBlockElements[i].el.style.visibility = "visible";
+		}
+	}
+});
+
+
+
+
 window.addEventListener("load", function(e){
 	console.log("Calling init() because the page loaded...");
 	init();

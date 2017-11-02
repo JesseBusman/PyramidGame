@@ -284,8 +284,12 @@ function getCell_createIfNotExists(x, y, onlyCreateIfRowExists)
 	{
 		if (y == 0)
 		{
-			//cellDiv.classList.remove("hiddenBlock");
-			//cellDiv.classList.add("availableBlock");
+			// 10% of the time, the bottom layer block should be available for purchase.
+			if (Math.random() < 0.1)
+			{
+				cellDiv.classList.remove("hiddenBlock");
+				cellDiv.classList.add("availableBlock");
+			}
 		}
 		else
 		{

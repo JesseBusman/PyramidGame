@@ -284,8 +284,8 @@ function getCell_createIfNotExists(x, y, onlyCreateIfRowExists)
 	{
 		if (y == 0)
 		{
-			cellDiv.classList.remove("hiddenBlock");
-			cellDiv.classList.add("availableBlock");
+			//cellDiv.classList.remove("hiddenBlock");
+			//cellDiv.classList.add("availableBlock");
 		}
 		else
 		{

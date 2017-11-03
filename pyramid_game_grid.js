@@ -284,8 +284,8 @@ function getCell_createIfNotExists(x, y, onlyCreateIfRowExists)
 	{
 		if (y == 0)
 		{
-			// 10% of the time, the bottom layer block should be available for purchase.
-			if (Math.random() < 0.1)
+			// 5% of the time, the bottom layer block should be available for purchase.
+			if (Math.random() < 0.05)
 			{
 				cellDiv.classList.remove("hiddenBlock");
 				cellDiv.classList.add("availableBlock");

@@ -492,9 +492,14 @@ async function init()
 	if (!readCookie("showChatbox") || readCookie("showChatbox") === "yes") showChatbox();
 	else hideChatbox();
 	
-	// Show the arrows to hide & show the account bar and chatbox
+	// By default, the leaderboard will be hidden.
+	if (readCookie("showLeaderboard") === "yes") showLeaderboard();
+	else hideLeaderboard();
+	
+	// Show the arrows to hide & show the account bar and chatbox and leaderboard
 	chatboxArrow.style.opacity = 1.0;
 	accountBarArrow.style.opacity = 1.0;
+	leaderboardArrow.style.opacity = 1.0;
 	
 	// Display the pyramid grid
 	pyramidField.style.display = "table-cell";

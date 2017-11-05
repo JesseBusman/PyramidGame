@@ -85,6 +85,12 @@ var selectedAccountUsername = null;
 var selectedAccountChatMessagesLeft = null;
 
 
+/**** Leaderboard ****/
+var showingLeaderboard = false;
+var leaderboardContainer = $("leaderboardContainer");
+var leaderboardArrow = $("leaderboardArrow");
+
+
 /**** Chatbox elements ****/
 var chatbox = $("chatbox");
 var chatboxUsername = $("chatboxUsername");
@@ -130,6 +136,7 @@ var pyramidHighestYonInitXcoord = null;
 var betsSubmittedAndWaitingFor = [];
 var pyramidGrid = [];
 var pyramidHtmlBlockElements = []; // contains objects of the format: {x: [INT], y: [INT], el: [ELEMENT]}
+var addressMetadata = {};
 
 
 /**** Performance options ****/

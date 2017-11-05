@@ -199,6 +199,30 @@ async function updateGame()
 				if (y >= pyramidGrid.length) pyramidGrid.push([]); // Add a new row if necessary
 				pyramidGrid[y][x] = address;
 				
+				// Update the address metadata
+				if (!addressMetadata.hasOwnProperty(address))
+				{
+					addressMetadata[address] = {"address": address, "totalBet": (new BigNumber(0)), "totalBetNotOnSelf": (new BigNumber(0)), "totalProfit": (new BigNumber(0)), "potentialProfit": (new BigNumber(0)), "blockCount": 0};
+				}
+				addressMetadata[address].totalBet = addressMetadata[address].totalBet.add(getBetAmountByY(y));
+				addressMetadata[address].potentialProfit = addressMetadata[address].potentialProfit.add(getBetAmountByY(y+1));
+				addressMetadata[address].blockCount++;
+				if (y == 0)
+				{
+					addressMetadata[address].totalBetNotOnSelf = addressMetadata[address].totalBetNotOnSelf.add(getBetAmountByY(y));
+				}
+				else
+				{
+					if (pyramidGrid[y-1][x] !== address) addressMetadata[address].totalBetNotOnSelf = addressMetadata[address].totalBetNotOnSelf.add(getBetAmountByY(y-1));
+					if (pyramidGrid[y-1][x+1] !== address) addressMetadata[address].totalBetNotOnSelf = addressMetadata[address].totalBetNotOnSelf.add(getBetAmountByY(y-1));
+					
+					addressMetadata[pyramidGrid[y-1][x]].totalProfit = addressMetadata[pyramidGrid[y-1][x]].totalProfit.add(getBetAmountByY(y-1));
+					addressMetadata[pyramidGrid[y-1][x+1]].totalProfit = addressMetadata[pyramidGrid[y-1][x+1]].totalProfit.add(getBetAmountByY(y-1));
+					
+					addressMetadata[pyramidGrid[y-1][x]].potentialProfit = addressMetadata[pyramidGrid[y-1][x]].potentialProfit.sub(getBetAmountByY(y-1));
+					addressMetadata[pyramidGrid[y-1][x+1]].potentialProfit = addressMetadata[pyramidGrid[y-1][x+1]].potentialProfit.sub(getBetAmountByY(y-1));
+				}
+				
 				// Create the cell
 				var cellDiv = getCell_createIfNotExists(x, y, false);
 				
@@ -301,6 +325,8 @@ async function updateGame()
 				
 				pyramidTotalBlocks++;
 			}
+			
+			updateLeaderboard();
 		}
 		
 		if (initializing && window.scroll)

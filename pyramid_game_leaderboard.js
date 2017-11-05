@@ -1,4 +1,4 @@
-
+ 
 leaderboardArrow.addEventListener("click", function(e){
 	if (!connected) return;
 	if (showingLeaderboard)

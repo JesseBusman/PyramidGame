@@ -91,6 +91,8 @@ function notConnected()
 	
 	hideChatbox();
 	
+	hideLeaderboard();
+	
 	chatboxArrow.style.opacity = 0.0;
 	accountBarArrow.style.opacity = 0.0;
 	
@@ -205,6 +207,9 @@ async function init()
 	
 	pyramidHighestYonInit = null;
 	
+	addressMetadata = {};
+	pyramidGrid = [];
+	pyramidHtmlBlockElements = [];
 	betsSubmittedAndWaitingFor = [];
 	
 	try

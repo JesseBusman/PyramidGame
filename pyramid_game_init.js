@@ -727,10 +727,12 @@ window.addEventListener("load", function(e){
 });
 
 // Make the background scroll at half the speed when the user scrolls the game horizontally
+/*
 window.addEventListener("scroll", function(e){
 	var horizontalScroll = window.scrollX;
 	document.body.style.backgroundPosition = parseInt(-horizontalScroll/2) + "px 0px";
 });
+*/
 
 var currentMouseX = null;
 var currentMouseY = null;

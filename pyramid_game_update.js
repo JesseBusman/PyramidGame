@@ -21,12 +21,15 @@ async function updateGame()
 		
 		newTotalBlocks = parseInt(newTotalBlocks.toString());
 		
+		//newTotalBlocks = Math.min(2000, newTotalBlocks);
+		
 		console.log("newTotalBlocks:");
 		console.log(newTotalBlocks);
 		
 		if (newTotalBlocks === 0)
 		{
 			initializationFailedBecauseOfIllegalContractOutput = true;
+			console.error("Error: Contract returned 0 total blocks!");
 			errorDuringInitialization = true;
 			notConnected();
 			return;
@@ -219,6 +222,7 @@ async function updateGame()
 				if (coords === 0 || coords === null)
 				{
 					statusBoxStatus.innerHTML = "Lost connection... Re-establishing...";
+					console.error("Received coordinates=0!!!");
 					break;
 					//initializationFailedBecauseOfIllegalContractOutput = true;
 					//throw "Error: We received all-zero coordinates from block index "+pyramidTotalBlocks+"!";

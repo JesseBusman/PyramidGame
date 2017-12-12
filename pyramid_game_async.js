@@ -104,7 +104,7 @@ function getBlockCoordinatesAtIndexAsync(gameInstance, index)
 	return new Promise((resolve, reject) => {
 		gameInstance.allBlockCoordinates(index, function(err, coordinates){
 			if (err != null) { reject(err); return; }
-			resolve(coordinates);
+			resolve(parseInt(coordinates.toString()));
 		});
 	});
 }

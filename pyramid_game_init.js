@@ -177,6 +177,12 @@ async function init()
 		$("statusBoxStatus").innerHTML = "Connecting...";
 	}
 	
+	// Display the error announcement box if the user uses MetaMask
+	if (web3.currentProvider.isMetaMask === true)
+	{
+		$("errorAnnouncementBox").classList.add("errorAnnouncementBoxDisplayed");
+	}
+	
 	window.browserInjectedPlugin = null;
 	
 	initializingFailedBecauseNoAccounts = false;
@@ -491,6 +497,9 @@ async function init()
 	// Initiliazation is done!
 	initializing = false;
 	connected = true;
+	
+	// Hide the error anouncement box
+	$("errorAnnouncementBox").classList.remove("errorAnnouncementBoxDisplayed");
 	
 	// Move the status box from the center of the screen to the top left corner
 	statusBox.classList.remove("statusBoxMiddleOfScreen");

@@ -29,7 +29,7 @@
 <body>
 
 <!-- Force this image to load before onload is called -->
-<img src="https://jessebusman.github.io/PyramidGame/stien_twa.png" style="position: fixed; left: -10000px; top: 0px;" alt="Ignore this, blind person"/>
+<img src="https://jessebusman.github.io/PyramidGame/stien_twa_lyts.png" style="position: fixed; left: -10000px; top: 0px;" alt="Ignore this, blind person"/>
 
 <!-- Top bar -->
 <div id="titleBar">
@@ -40,6 +40,18 @@
 	<div id="statusBoxStatus">Loading page...</div>
 	<br/>
 	<div id="statusBoxLoadingBar"></div>
+</div>
+<div id="errorAnnouncementBox">
+	Due to a recent malfunction within Metamask's communication system, the Pyramid Game has not been able to load properly for some users.<br/><br/>
+	One possible workaround is to switch to a Custom RPC node by following these steps:
+	<ol>
+		<li>Copy this URL: <div style="display:inline-block;">https://mainnet.infura.io/</div></li>
+		<li>Click the Metamask icon in your browser</li>
+		<li>Click where it says 'Main Ethereum Network' at the top-left of Metamask</li>
+		<li>Click 'Custom RPC'</li>
+		<li>Paste the URL into the 'New RPC URL' field</li>
+		<li>Click Save</li>
+	</ol>
 </div>
 <div id="aboutBox">
 	<div>Total blocks: <span id="totalBlocks"></span></div>

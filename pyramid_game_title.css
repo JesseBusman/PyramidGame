@@ -219,3 +219,64 @@
 
 
 
+
+
+/***************************************************************/
+/***************************************************************/
+/**************** ERROR ANNOUNCEMENT BOX ***********************/
+/***************************************************************/
+/***************************************************************/
+
+.errorAnnouncementBoxDisplayed
+{
+	left: calc(50% - 250px) !important;
+}
+#errorAnnouncementBox
+{
+	position: fixed;
+	top: 445px;
+	left: -1000px;
+	
+	width: 500px;
+	border: black solid 2px;
+	background-color: #000000;
+	padding: 10px;
+	min-height: 410px;
+	height: 410px;
+	
+	margin-bottom: 5px;
+	color: var(--menu-font-color);
+	transition: top 0.5s, left 0.5s;
+	text-align: center;
+	vertical-align: middle;
+	z-index: 10;
+	
+	
+}
+
+#errorAnnouncementBox > a, #errorAnnouncementBox > a:visited, #errorAnnouncementBox > a:active
+{
+	color: white !important;
+	transition: color 0.4s;
+}
+#errorAnnouncementBox > a:hover
+{
+	color: yellow !important;
+}
+
+#errorAnnouncementBox
+{
+	margin-top: 25px;
+	font-size: 17pt;
+}
+
+#errorAnnouncementBox > ol
+{
+	font-size: 15pt;
+	text-align: left;
+}
+
+#errorAnnouncementBox > ol > li
+{
+	margin-bottom: 10px;
+}

@@ -125,7 +125,15 @@ async function updateGame()
 				// ...otherwise, load it from the blockchain through web3.js
 				else
 				{
-					usernames[i] = getUsernameByAddressAsync(gameInstance, newBlockAddresses[i]);
+					console.log("newBlockAddresses[i]="+newBlockAddresses[i]);
+					try
+					{
+						usernames[i] = getUsernameByAddressAsync(gameInstance, newBlockAddresses[i]);
+					}
+					catch (e)
+					{
+						usernames[i] = "?";
+					}
 				}
 				
 				loadingUsernameAddresses.push(newBlockAddresses[i]);

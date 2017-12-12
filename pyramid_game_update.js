@@ -138,7 +138,14 @@ async function updateGame()
 				
 				loadingUsernameAddresses.push(newBlockAddresses[i]);
 			}
-			usernames = await Promise.all(usernames);
+			try
+			{
+				usernames = await Promise.all(usernames);
+			}
+			catch (e)
+			{
+				usernames = [];
+			}
 			
 			for (var i=pyramidTotalBlocks; i<newTotalBlocks; i++)
 			{

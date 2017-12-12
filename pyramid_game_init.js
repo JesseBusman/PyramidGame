@@ -190,6 +190,11 @@ async function init()
 	gameInstance = null;
 	currentNetworkId = null;
 	
+	/*if (pyramidField != null) pyramidFieldContainer.removeChild(pyramidField);
+	pyramidField = null;
+	pyramidField = document.createElement("div");
+	pyramidField.setAttribute("id", "pyramidField");*/
+	
 	chatboxUsername.innerHTML = "";
 	chatMessagesDiv.innerHTML = "";
 	
@@ -441,6 +446,10 @@ async function init()
 		var updateChatMessagesLeftPromise = updateChatMessagesLeft();
 		
 		await updateGamePromise;
+		
+		//pyramidFieldContainer.appendChild(pyramidField);
+		
+		//await elementRenderedOrTimeout(pyramidFieldContainer, 1500);
 		
 		addBlockToLoadingBar();
 		

@@ -145,6 +145,19 @@ async function updateGame()
 			
 			totalBlocksSpan.innerHTML = "" + newTotalBlocks;
 			
+			// Update the pyramidGrid global variable
+			for (var k=pyramidTotalBlocks; k<newTotalBlocks; k++)
+			{
+				var address = newBlockAddresses[k];
+				var coords = newBlockCoordinates[k];
+				
+				var x = (coords >> 16) & 0xFFFF;
+				var y = coords & 0xFFFF;
+				
+				if (y >= pyramidGrid.length) pyramidGrid.push([]); // Add a new row if necessary
+				pyramidGrid[y][x] = address;
+			}
+			
 			// Loop over all the new blocks and update the game state
 			while (pyramidTotalBlocks < newTotalBlocks)
 			{
@@ -194,10 +207,6 @@ async function updateGame()
 				
 				// Get the address of the sender of this block
 				var address = newBlockAddresses[pyramidTotalBlocks];
-				
-				// Update the pyramidGrid global variable
-				if (y >= pyramidGrid.length) pyramidGrid.push([]); // Add a new row if necessary
-				pyramidGrid[y][x] = address;
 				
 				// Update the address metadata
 				if (!addressMetadata.hasOwnProperty(address))
@@ -309,21 +318,28 @@ async function updateGame()
 				updateBlockReturnedEth(x, y);
 				
 				// Update the returned ETH of the blocks below
-				updateBlockReturnedEth(x, y-1);
+				updateBlockReturnedEth(x  , y-1);
 				updateBlockReturnedEth(x+1, y-1);
 				
+				function blockIsPlaced(x, y){return pyramidGrid[y] && pyramidGrid[y][x];}
+				
 				// Update the available status of the blocks above
-				getCell_createIfNotExists(x, y+1, true);
-				getCell_createIfNotExists(x-1, y+1, true);
+				if (!blockIsPlaced(x  , y+1)) getCell_createIfNotExists(x  , y+1, true);
+				if (!blockIsPlaced(x-1, y+1)) getCell_createIfNotExists(x-1, y+1, true);
 				
 				// If this is the bottom layer, update the available status of the blocks besides
 				if (y == 0)
 				{
-					getCell_createIfNotExists(x+1, y, false);
-					getCell_createIfNotExists(x-1, y, false);
+					if (!blockIsPlaced(x+1, y)) getCell_createIfNotExists(x+1, y, false);
+					if (!blockIsPlaced(x-1, y)) getCell_createIfNotExists(x-1, y, false);
 				}
 				
 				pyramidTotalBlocks++;
+			}
+			
+			if (initializing && !errorDuringInitialization)
+			{
+				$("statusBoxStatus").innerHTML = "Loading leaderboard...";
 			}
 			
 			updateLeaderboard();

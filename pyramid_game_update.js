@@ -19,10 +19,18 @@ async function updateGame()
 		// Fetch the current total amount of blocks from the user's Ethereum client
 		var newTotalBlocks = await getTotalAmountOfBlocksAsync(gameInstance);
 		
+		newTotalBlocks = parseInt(newTotalBlocks.toString());
+		
 		console.log("newTotalBlocks:");
 		console.log(newTotalBlocks);
 		
-		newTotalBlocks = parseInt(newTotalBlocks.toString());
+		if (newTotalBlocks === 0)
+		{
+			initializationFailedBecauseOfIllegalContractOutput = true;
+			errorDuringInitialization = true;
+			notConnected();
+			return;
+		}
 		
 		// If there is nothing to update, quit
 		if (pyramidTotalBlocks == newTotalBlocks)
@@ -53,6 +61,7 @@ async function updateGame()
 			if (initializing && !errorDuringInitialization)
 			{
 				$("statusBoxStatus").innerHTML = "Loading block coordinates...";
+				console.log("Loading block coordinates...");
 			}
 			
 			// Loop over all the new blocks and fetch their coordinates asynchronously
@@ -73,6 +82,12 @@ async function updateGame()
 			
 			newBlockCoordinates = await Promise.all(newBlockCoordinates);
 			
+			for (var i=pyramidTotalBlocks; i<newTotalBlocks.length; i++)
+			{
+				if (parseInt(newBlockCoordinates[i]) === newBlockCoordinates[i]) {}
+				else console.error("newBlockCoordinates[i]="+newBlockCoordinates[i]);
+			}
+			
 			addBlockToLoadingBar();
 			
 			if (initializing && !errorDuringInitialization)
@@ -87,6 +102,7 @@ async function updateGame()
 				if (i < CACHED_BLOCK_ADDRESSES.length)
 				{
 					newBlockAddresses[i] = CACHED_BLOCK_ADDRESSES[i];
+					//console.log("Cached block address: "+newBlockAddresses[i]);
 				}
 				
 				// otherwise, load it from the blockchain through web3.js
@@ -97,6 +113,21 @@ async function updateGame()
 			}
 			
 			newBlockAddresses = await Promise.all(newBlockAddresses);
+			
+			for (var i=0; i<newBlockAddresses.length; i++)
+			{
+				if (!newBlockAddresses[i] || newBlockAddresses[i].length != 42 || newBlockAddresses[i] === "0x0000000000000000000000000000000000000000")
+				{
+					console.error("New block address index "+i+" coordinates "+newBlockCoordinates[i]+" is invalid: "+newBlockAddresses[i]);
+					//newBlockAddresses[i] = "0x0000000000000000000000000000000000000000";
+					initializationFailedBecauseOfIllegalContractOutput = true;
+					throw "Received invalid block address for index "+i+" coordinates "+newBlockCoordinates[i]+": "+newBlockAddresses[i];
+				}
+				else
+				{
+					console.log("Block address "+i+" is valid: "+newBlockAddresses[i]);
+				}
+			}
 			
 			addBlockToLoadingBar();
 			
@@ -125,15 +156,19 @@ async function updateGame()
 				// ...otherwise, load it from the blockchain through web3.js
 				else
 				{
-					console.log("newBlockAddresses[i]="+newBlockAddresses[i]);
-					try
+					console.log("newBlockAddresses["+i+"]="+newBlockAddresses[i]);
+					if (newBlockAddresses[i].length == 42)
 					{
-						usernames[i] = getUsernameByAddressAsync(gameInstance, newBlockAddresses[i]);
+						try
+						{
+							usernames[i] = getUsernameByAddressAsync(gameInstance, newBlockAddresses[i]);
+						}
+						catch (e)
+						{
+							usernames[i] = "?";
+						}
 					}
-					catch (e)
-					{
-						usernames[i] = "?";
-					}
+					else console.log("address is faulty: "+newBlockAddresses[i]);
 				}
 				
 				loadingUsernameAddresses.push(newBlockAddresses[i]);

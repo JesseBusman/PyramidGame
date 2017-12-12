@@ -58,7 +58,7 @@
 {
 	position: relative;
 	vertical-align: middle;
-	background-image: url(https://jessebusman.github.io/PyramidGame/stien_twa.png);
+	background-image: url(https://jessebusman.github.io/PyramidGame/stien_twa_lyts.png);
 	background-size: 100% 100%;
 }
 .placedBlock > canvas
@@ -105,7 +105,7 @@
 	color: grey;
 	vertical-align: middle;
 	opacity: 0.3;
-	background-image: url(https://jessebusman.github.io/PyramidGame/stien_twa.png);
+	background-image: url(https://jessebusman.github.io/PyramidGame/stien_twa_lyts.png);
 	background-size: 100% 100%;
 	position: relative;
 }

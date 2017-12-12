@@ -218,7 +218,7 @@ function getCell_createIfNotExists(x, y, onlyCreateIfRowExists)
 				gameInstance.placeBlock(
 					x,
 					y,
-					{from: selectedAccount, value: transactionAmount, gas: 130000},
+					{from: selectedAccount, value: transactionAmount, gas: 150000},
 					function(err){
 						if (err != null)
 						{

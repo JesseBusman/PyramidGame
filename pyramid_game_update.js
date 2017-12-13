@@ -21,8 +21,6 @@ async function updateGame()
 		
 		newTotalBlocks = parseInt(newTotalBlocks.toString());
 		
-		//newTotalBlocks = Math.min(2000, newTotalBlocks);
-		
 		console.log("newTotalBlocks:");
 		console.log(newTotalBlocks);
 		
@@ -126,10 +124,6 @@ async function updateGame()
 					initializationFailedBecauseOfIllegalContractOutput = true;
 					throw "Received invalid block address for index "+i+" coordinates "+newBlockCoordinates[i]+": "+newBlockAddresses[i];
 				}
-				else
-				{
-					console.log("Block address "+i+" is valid: "+newBlockAddresses[i]);
-				}
 			}
 			
 			addBlockToLoadingBar();
@@ -159,7 +153,6 @@ async function updateGame()
 				// ...otherwise, load it from the blockchain through web3.js
 				else
 				{
-					console.log("newBlockAddresses["+i+"]="+newBlockAddresses[i]);
 					if (newBlockAddresses[i].length == 42)
 					{
 						try

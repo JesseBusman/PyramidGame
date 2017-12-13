@@ -25,6 +25,12 @@ function notConnected()
 	if (initializing) errorDuringInitialization = true;
 	connected = false;
 	
+	// Display the error announcement box if the user uses MetaMask
+	if (web3.currentProvider.isMetaMask === true)
+	{
+		$("errorAnnouncementBox").classList.add("errorAnnouncementBoxDisplayed");
+	}
+	
 	if (initializingFailedBecauseWrongNetwork)
 	{
 		connected = true;

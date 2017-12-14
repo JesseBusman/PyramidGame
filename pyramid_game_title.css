@@ -241,10 +241,9 @@
 	border: black solid 2px;
 	background-color: #000000;
 	padding: 10px;
-	min-height: 370px;
-	height: 370px;
+	min-height: 240px;
+	height: 240px;
 	
-	margin-bottom: 5px;
 	color: var(--menu-font-color);
 	transition: top 0.5s, left 0.5s;
 	text-align: center;
@@ -267,12 +266,12 @@
 #errorAnnouncementBox
 {
 	margin-top: 25px;
-	font-size: 15pt;
+	font-size: 10.5pt;
 }
 
 #errorAnnouncementBox > ol
 {
-	font-size: 14pt;
+	font-size: 10.5pt;
 	text-align: left;
 }
 

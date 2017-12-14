@@ -21,8 +21,7 @@ async function updateGame()
 		
 		newTotalBlocks = parseInt(newTotalBlocks.toString());
 		
-		console.log("newTotalBlocks:");
-		console.log(newTotalBlocks);
+		console.log("newTotalBlocks="+newTotalBlocks+" pyramidTotalBlocks="+pyramidTotalBlocks);
 		
 		if (newTotalBlocks === 0)
 		{
@@ -83,10 +82,10 @@ async function updateGame()
 			
 			newBlockCoordinates = await Promise.all(newBlockCoordinates);
 			
-			for (var i=pyramidTotalBlocks; i<newTotalBlocks.length; i++)
+			for (var i=pyramidTotalBlocks; i<newTotalBlocks; i++)
 			{
-				if (parseInt(newBlockCoordinates[i]) === newBlockCoordinates[i]) {}
-				else console.error("newBlockCoordinates[i]="+newBlockCoordinates[i]);
+				if (parseInt(newBlockCoordinates[i]) === newBlockCoordinates[i]) ;
+				else throw "ERROR: invalid coordinates newBlockCoordinates[i]="+newBlockCoordinates[i];
 			}
 			
 			addBlockToLoadingBar();
@@ -115,7 +114,7 @@ async function updateGame()
 			
 			newBlockAddresses = await Promise.all(newBlockAddresses);
 			
-			for (var i=0; i<newBlockAddresses.length; i++)
+			for (var i=pyramidTotalBlocks; i<newTotalBlocks; i++)
 			{
 				if (!newBlockAddresses[i] || newBlockAddresses[i].length != 42 || newBlockAddresses[i] === "0x0000000000000000000000000000000000000000")
 				{

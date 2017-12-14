@@ -47,7 +47,9 @@ function updateLeaderboard()
 		{
 			var h = "<tr><th></th><th></th>";
 			h += "<th>";
-			h += "Username";
+			if (leaderboardSortColumn == 5) h += "<u>";
+			h += "<a href='#' onclick='sortLeaderboardBy(5);return false;'>Username</a>";
+			if (leaderboardSortColumn == 5) h += "</u>";
 			
 			h += "</th><th>";
 			if (leaderboardSortColumn == 4) h += "<u>";
@@ -95,6 +97,17 @@ function updateLeaderboard()
 				else if (leaderboardSortColumn == 2) return b.totalProfit.sub(b.totalBet).comparedTo(a.totalProfit.sub(a.totalBet)); // sort by profit
 				else if (leaderboardSortColumn == 3) return b.potentialProfit.comparedTo(a.potentialProfit); // sort by potential
 				else if (leaderboardSortColumn == 4) return (b.blockCount > a.blockCount) ? 1 : -1; // sort by block count
+				else if (leaderboardSortColumn == 5) // sort by username
+				{
+					var aDoesNotHaveUsername = !addressesToUsernames[a.address] || addressesToUsernames[a.address].trim().length == 0;
+					var bDoesNotHaveUsername = !addressesToUsernames[b.address] || addressesToUsernames[b.address].trim().length == 0;
+					if (aDoesNotHaveUsername && bDoesNotHaveUsername) return b.totalProfit.sub(b.totalBet).comparedTo(a.totalProfit.sub(a.totalBet)); // sort people without username by profit
+					
+					if (aDoesNotHaveUsername) return 1;
+					if (bDoesNotHaveUsername) return -1;
+					
+					return (addressesToUsernames[b.address].trim().toLowerCase() < addressesToUsernames[a.address].trim().toLowerCase()) ? 1 : -1;
+				}
 				else return 0;
 			});
 			

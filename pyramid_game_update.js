@@ -203,6 +203,13 @@ async function updateGame()
 				pyramidGrid[y][x] = address;
 			}
 			
+			if (initializing && !errorDuringInitialization)
+			{
+				console.log("Displaying blocks...");
+				$("statusBoxStatus").innerHTML = "Displaying blocks...";
+				await new Promise(function(resolve, reject){setTimeout(resolve, 10, true);})
+			}
+			
 			// Loop over all the new blocks and update the game state
 			while (pyramidTotalBlocks < newTotalBlocks)
 			{

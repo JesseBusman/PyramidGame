@@ -184,9 +184,12 @@ async function init()
 	}
 	
 	// Display the error announcement box if the user uses MetaMask
-	if (web3.currentProvider.isMetaMask === true)
+	if (typeof web3 !== 'undefined')
 	{
-		$("errorAnnouncementBox").classList.add("errorAnnouncementBoxDisplayed");
+		if (web3.currentProvider.isMetaMask === true)
+		{
+			$("errorAnnouncementBox").classList.add("errorAnnouncementBoxDisplayed");
+		}
 	}
 	
 	window.browserInjectedPlugin = null;

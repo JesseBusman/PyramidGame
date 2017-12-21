@@ -194,6 +194,8 @@ async function init()
 	
 	window.browserInjectedPlugin = null;
 	
+	ethereumClassic = null;
+	
 	initializingFailedBecauseNoAccounts = false;
 	initializingFailedBecauseWrongNetwork = false;
 	initializingFailedBecauseNotSyncedBlocksBehind = null;
@@ -359,6 +361,32 @@ async function init()
 		notConnected();
 		initializing = false;
 		return;
+	}
+	
+	try
+	{
+		// Determine whether we are on Ethereum Classic by getting the block hash of the first DAO hard fork block:
+		var block = await getBlockAsync(1920000);
+		console.log("The hard fork block is: ");
+		console.log(block);
+		if (block.hash === "0x94365e3a8c0b35089c1d1195081fe7489b528a84b22199c916180db8b28ade7f")
+		{
+			ethereumClassic = true;
+			console.log("We are on Ethereum Classic! Disabling cache.js...");
+			CACHED_BLOCK_ADDRESSES = [];
+			CACHED_BLOCK_COORDINATES = [];
+			CACHED_ADDRESSES_TO_USERNAMES = {};
+		}
+		else
+		{
+			ethereumClassic = false;
+		}
+	}
+	catch (e)
+	{
+		console.log("Failed to distinguish Ethereum mainnet from Ethereum Classic. Assuming ethereum main net.");
+		console.error(e);
+		ethereumClassic = false;
 	}
 	
 	try

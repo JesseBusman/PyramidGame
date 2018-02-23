@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!-- Import the web3.js library to be able to interact with a local ethereum node -->
+<script src="web3.js"></script>
+
+<!-- Import the BigNumber library to be able to deal with the 256-bit integers that Ethereum uses -->
+<script src="bignumber.js"></script>
+
+<!-- Import the blockies library to draw the familiar images associated with Ethereum accounts -->
+<script src="blockies.js"></script>
+<title>The Pyramid Game</title>
+<style type="text/css">
+html, body, canvas
+{
+	padding: 0;
+	outline: 0;
+	margin: 0;
+	border: 0;
+	overflow: hidden;
+}
+</style>
+</head>
+<body>
+<img src="stien_twa_lyts.png" id="stien_twa_lyts" style="display:none;"/>
+<canvas width="0" height="0" id="c"></canvas>
+<script>
+let GAME_ADDRESS = "0xC3c94e2d9A33AB18D5578BD63DfdaA3e0EA74a49";
+let GAME_ABI = 
+JSON.parse('[{"constant":true,"inputs":[{"name":"","type":"uint32"}],"name":"coordinatesToAddresses","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"y","type":"uint16"}],"name":"getBetAmountAtLayer","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"},{"constant":false,"inputs":[{"name":"newFeeDivisor","type":"uint256"}],"name":"setFeeDivisor","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"addressesToTotalWeiPlaced","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"x","type":"uint16"},{"name":"y","type":"uint16"}],"name":"isThereABlockAtCoordinates","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getTotalAmountOfBlocks","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"chatMessageIndex","type":"uint256"}],"name":"censorChatMessage","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"addressesToChatMessagesLeft","outputs":[{"name":"","type":"uint32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"username","type":"bytes32"}],"name":"registerUsername","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"addressBalances","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"index","type":"uint256"}],"name":"getChatMessageAtIndex","outputs":[{"name":"","type":"address"},{"name":"","type":"bytes32"},{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"addressesToUsernames","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"message","type":"string"}],"name":"sendChatMessage","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getTotalAmountOfChatMessages","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"chatMessages","outputs":[{"name":"person","type":"address"},{"name":"message","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"amountToWithdraw","type":"uint256"}],"name":"withdrawBalance","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"x","type":"uint16"},{"name":"y","type":"uint16"}],"name":"placeBlock","outputs":[],"payable":true,"stateMutability":"payable","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"allBlockCoordinates","outputs":[{"name":"","type":"uint32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"censoredChatMessages","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"newAdministrator","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"","type":"bytes32"}],"name":"usernamesToAddresses","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"}]');
+
+var gameABIinstance = null;
+var gameInstance = null;
+
+async function callContract(funcName)
+{
+	var args = arguments;
+	return await new Promise((resolve, reject) => {
+		var callback = function(err, result){
+			if (err != null) { reject(err); return; }
+			resolve(result);
+		};
+		var func = gameInstance[funcName];
+		if (args.length == 1) func(callback);
+		else if (args.length == 2) func(args[1], callback);
+		else if (args.length == 3) func(args[1], args[2], callback);
+		else throw "Too many args :(";
+	});
+}
+
+var stien_twa_lyts = document.getElementById("stien_twa_lyts");
+
+var connected = false;
+
+// Game state
+var totalBlocks = 0;
+var blockCoordinates = [];
+var blockAddresses = [];
+
+// Display state
+var translationX = 0;
+var translationY = 0;
+var scaleX = 1.0;
+var scaleY = 1.0;
+var destScaleX = scaleX;
+var destScaleY = scaleY;
+
+
+var c = document.getElementById("c");
+var ctx = c.getContext("2d");
+async function init()
+{
+	resized();
+	
+	try
+	{
+		// Checking if Web3 has been injected by the browser
+		// (Mist, MetaMask or some other plugin or add-on)
+		if (typeof web3 !== 'undefined')
+		{
+			// Use Mist/MetaMask's provider
+			console.log("The browser has injected web3!");
+			window.web3 = new Web3(web3.currentProvider);
+		}
+		else
+		{
+			// Fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
+			console.log("The browser has not injected web3! Attempting connection to infura node...");
+			window.web3 = new Web3(new Web3.providers.HttpProvider("https://mainnet.infura.io/c21j1dMqHrU3uAZGAEbN"));
+		}
+	}
+	catch (e)
+	{
+		console.log("Not connected because of failure in initializing web3.js:");
+		console.log(e);
+		notConnected();
+		connected = false;
+		return;
+	}
+	
+	gameABIinstance = window.web3.eth.contract(GAME_ABI);
+	gameInstance = gameABIinstance.at(GAME_ADDRESS);
+	
+	connected = true;
+	update();
+}
+async function update()
+{
+	var fastNextUpdate = false;
+	
+	var newTotalBlocks = parseInt(await callContract("getTotalAmountOfBlocks"));
+	
+	if (newTotalBlocks > totalBlocks+50)
+	{
+		newTotalBlocks = totalBlocks+50;
+		fastNextUpdate = true;
+	}
+	
+	// Load the block coordinates we don't have yet
+	for (var i=totalBlocks; i<newTotalBlocks; i++)
+	{
+		blockCoordinates[i] = callContract("allBlockCoordinates", i);
+	}
+	blockCoordinates = await Promise.all(blockCoordinates);
+	
+	// Turn the new block coordinates into arrays of native JS numbers [x, y]
+	// Also, load the block owner addresses
+	for (var i=totalBlocks; i<newTotalBlocks; i++)
+	{
+		blockAddresses[i] = callContract("coordinatesToAddresses", blockCoordinates[i]);
+		var coords = parseInt(blockCoordinates[i].toString());
+		var x = (coords >> 16) & 0xFFFF;
+		var y = coords & 0xFFFF;
+		blockCoordinates[i] = [x, y];
+	}
+	blockAddresses = await Promise.all(blockAddresses);
+	
+	for (var i=totalBlocks; i<newTotalBlocks; i++)
+	{
+	}
+	
+	totalBlocks = newTotalBlocks;
+	
+	setTimeout(update, fastNextUpdate ? 0 : 5000);
+}
+function draw()
+{
+	//ctx.clearRect(0, 0, c.width, c.height);
+	ctx.fillStyle = "black";
+	ctx.fillRect(0, 0, c.width, c.height);
+	if (!connected)
+	{
+		ctx.font = "18pt Arial";
+		ctx.fillStyle = "white";
+		ctx.fillText("Connecting to the Ethereum network...", 300, 300);
+	}
+	else if (totalBlocks == 0)
+	{
+		ctx.font = "18pt Arial";
+		ctx.fillStyle = "white";
+		ctx.fillText("Loading game state...", 300, 300);
+	}
+	else
+	{
+		ctx.font = "18pt Arial";
+		ctx.fillStyle = "white";
+		ctx.fillText("There are "+totalBlocks+" blocks", 100, 30);
+		
+		ctx.translate(0, c.height);
+		{
+			ctx.translate(translationX, translationY);
+			{
+				//ctx.scale(scaleX, scaleY);
+				{
+					var BLOCK_WIDTH = 140;
+					var BLOCK_HEIGHT = 90;
+					
+					ctx.fillStyle = "red";
+					for (var i=0; i<totalBlocks; i++)
+					{
+						var coords = blockCoordinates[i];
+						var blockX = coords[0];
+						var blockY = coords[1];
+						var displayX = (blockX - 32768) * BLOCK_WIDTH + BLOCK_WIDTH / 2 * blockY;
+						var displayY = - 50 - blockY * BLOCK_HEIGHT;
+						if (displayX + translationX < 0) continue;
+						if (displayX + translationX > c.width - BLOCK_WIDTH) continue;
+						
+						//ctx.fillRect(displayX, displayY, BLOCK_WIDTH-1, BLOCK_HEIGHT-1);
+						ctx.drawImage(	stien_twa_lyts,
+										0, 0, stien_twa_lyts.width, stien_twa_lyts.height,
+										displayX, displayY, BLOCK_WIDTH, BLOCK_HEIGHT);
+						
+						writeBlockiesToCanvas(c, displayX+95, displayY+45, blockAddresses[i]);
+					}
+				}
+				//ctx.scale(1.0/scaleX, 1.0/scaleY);
+			}
+			ctx.translate(-translationX, -translationY);
+		}
+		ctx.translate(0, -c.height);
+	}
+	setTimeout(draw, 20);
+}
+window.addEventListener("load", init);
+draw();
+setInterval(function physics(){
+	if (destScaleX != scaleX) scaleX += (destScaleX - scaleX) * 0.09;
+	if (destScaleY != scaleY) scaleY += (destScaleY - scaleY) * 0.09;
+}, 25);
+
+var dragging = false;
+var draggingStartCanvasX = null;
+var draggingStartCanvasY = null;
+var draggingStartTranslationX = null;
+var draggingStartTranslationY = null;
+c.addEventListener("mousedown", function(e){
+	dragging = true;
+	draggingStartCanvasX = e.clientX;
+	draggingStartCanvasY = e.clientY;
+	draggingStartTranslationX = translationX;
+	draggingStartTranslationY = translationY;
+});
+c.addEventListener("mouseup", function(e){
+	dragging = false;
+});
+c.addEventListener("mouseout", function(e){
+	dragging = false;
+});
+c.addEventListener("mousemove", function(e){
+	if (dragging)
+	{
+		translationX = draggingStartTranslationX + e.clientX - draggingStartCanvasX;
+		translationY = draggingStartTranslationY + e.clientY - draggingStartCanvasY;
+	}
+});
+// Suppose you're displaying:
+// | 10 --- 30 |
+// Now you zoom out 2x. It should become:
+// |  0 --- 40 |
+c.addEventListener('wheel', function(e) {
+	if (e.deltaY < 0)
+	{
+		destScaleX = scaleX * 1.07;
+		destScaleY = scaleY * 1.07;
+		//translationX += c.width * 0.07;
+	}
+	if (e.deltaY > 0)
+	{
+		destScaleX = scaleX / 1.07;
+		destScaleY = scaleY / 1.07;
+		//translationX -= c.width * 0.07;
+	}
+});
+function resized()
+{
+	c.width = window.innerWidth - 2;
+	c.height = window.innerHeight - 2;
+}
+window.addEventListener("resize", resized);
+</script>
+</body>
+</html>

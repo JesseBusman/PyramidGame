@@ -64,6 +64,11 @@ var scaleX = 1.0;
 var scaleY = 1.0;
 var destScaleX = scaleX;
 var destScaleY = scaleY;
+var disco = false;
+var blockXYtoEffectStatus = {};
+var hoveredBlockX = null;
+var hoveredBlockY = null;
+
 
 
 var c = document.getElementById("c");
@@ -100,6 +105,8 @@ async function init()
 	
 	gameABIinstance = window.web3.eth.contract(GAME_ABI);
 	gameInstance = gameABIinstance.at(GAME_ADDRESS);
+	
+	BOTTOM_LAYER_BET_AMOUNT = await callContract("getBetAmountAtLayer", 0);
 	
 	connected = true;
 	update();
@@ -143,6 +150,49 @@ async function update()
 	
 	setTimeout(update, fastNextUpdate ? 0 : 5000);
 }
+
+var t = 0;
+
+var BOTTOM_LAYER_BET_AMOUNT = null;
+
+var BASE_BLOCK_WIDTH = 140;
+var BASE_BLOCK_HEIGHT = 90;
+function getBlockWidth()
+{
+	return BASE_BLOCK_WIDTH * scaleX;
+}
+function getBlockHeight()
+{
+	return BASE_BLOCK_HEIGHT * scaleY;
+}
+
+function blockXYtoCanvasXY(blockX, blockY)
+{
+	return [
+		(blockX - 32768) * getBlockWidth() + getBlockWidth() / 2 * blockY,
+		- getBlockHeight() - blockY * getBlockHeight()
+	];
+}
+
+// canvasY = - getBlockHeight() - blockY * getBlockHeight()
+// canvasY + getBlockHeight() = - blockY * getBlockHeight()
+// - canvasY - getBlockHeight() = blockY * getBlockHeight()
+// (- canvasY - getBlockHeight())/getBlockHeight() = blockY
+function canvasYtoBlockY(canvasY)
+{
+	return Math.floor((window.innerHeight-canvasY+translationY) / getBlockHeight());
+}
+
+// (blockX - 32768) * getBlockWidth() + getBlockWidth() / 2 * blockY = canvasX
+// (blockX - 32768) * getBlockWidth() = canvasX - getBlockWidth() / 2 * blockY
+// blockX - 32768 = (canvasX - getBlockWidth() / 2 * blockY) / getBlockWidth()
+// blockX = (canvasX - getBlockWidth() / 2 * blockY) / getBlockWidth() + 32768
+
+function canvasXandBlockYtoBlockX(canvasX, blockY)
+{
+	return Math.floor((canvasX - getBlockWidth() / 2 * blockY) / getBlockWidth() + 32768);
+}
+
 function draw()
 {
 	//ctx.clearRect(0, 0, c.width, c.height);
@@ -168,35 +218,82 @@ function draw()
 		
 		ctx.translate(0, c.height);
 		{
-			ctx.translate(translationX, translationY);
+			ctx.translate(translationX*scaleX, translationY*scaleY);
 			{
 				//ctx.scale(scaleX, scaleY);
 				{
-					var BLOCK_WIDTH = 140;
-					var BLOCK_HEIGHT = 90;
-					
 					ctx.fillStyle = "red";
 					for (var i=0; i<totalBlocks; i++)
 					{
 						var coords = blockCoordinates[i];
 						var blockX = coords[0];
 						var blockY = coords[1];
-						var displayX = (blockX - 32768) * BLOCK_WIDTH + BLOCK_WIDTH / 2 * blockY;
-						var displayY = - 50 - blockY * BLOCK_HEIGHT;
-						if (displayX + translationX < 0) continue;
-						if (displayX + translationX > c.width - BLOCK_WIDTH) continue;
+						var canvasXY = blockXYtoCanvasXY(blockX, blockY);
+						var displayX = canvasXY[0];
+						var displayY = canvasXY[1];
+						if (displayX + translationX*scaleX < -getBlockWidth()) continue;
+						if (displayX + translationX*scaleX > c.width) continue;
 						
-						//ctx.fillRect(displayX, displayY, BLOCK_WIDTH-1, BLOCK_HEIGHT-1);
 						ctx.drawImage(	stien_twa_lyts,
 										0, 0, stien_twa_lyts.width, stien_twa_lyts.height,
-										displayX, displayY, BLOCK_WIDTH, BLOCK_HEIGHT);
+										displayX, displayY, getBlockWidth(), getBlockHeight());
 						
-						writeBlockiesToCanvas(c, displayX+95, displayY+45, blockAddresses[i]);
+						ctx.translate(displayX+getBlockWidth() * 0.7, displayY+getBlockHeight()*0.5);
+						{
+							ctx.scale(scaleX, scaleY);
+							{
+								writeBlockiesToCanvas(c, 0, 0, blockAddresses[i], disco?t:0);
+								
+								ctx.fillStyle = "red";
+								ctx.globalAlpha = 0.2;
+								ctx.fillRect(-80, -40, 40, 20);
+								ctx.globalAlpha = 1.0;
+								
+								ctx.fillStyle = "black";
+								ctx.font = "12pt Arial";
+								ctx.fillText("-"+web3.fromWei(BOTTOM_LAYER_BET_AMOUNT.mul((new BigNumber(2)).pow(blockY))), -80, -20);
+							}
+							ctx.scale(1.0/scaleX, 1.0/scaleY);
+						}
+						ctx.translate(-displayX-getBlockWidth() * 0.7, -displayY-getBlockHeight()*0.5);
+						
+						var blockXY = (blockX << 16) | blockY;
+						if (!blockXYtoEffectStatus.hasOwnProperty(blockXY))
+						{
+							blockXYtoEffectStatus[blockXY] = {
+								"hoverHighlight": 0.0
+							};
+							//console.log("created effects storage for x "+blockX);
+							//console.log("blockXYtoEffectStatus[blockXY].hoverHighlight="+blockXYtoEffectStatus[blockXY].hoverHighlight);
+						}
+						
+						if (blockX == hoveredBlockX &&
+						    blockY == hoveredBlockY)
+						{
+							blockXYtoEffectStatus[blockXY].hoverHighlight += 0.07;
+							blockXYtoEffectStatus[blockXY].hoverHighlight = Math.min(blockXYtoEffectStatus[blockXY].hoverHighlight, 1.0);
+						}
+						else
+						{
+							blockXYtoEffectStatus[blockXY].hoverHighlight -= 0.07;
+							blockXYtoEffectStatus[blockXY].hoverHighlight = Math.max(blockXYtoEffectStatus[blockXY].hoverHighlight, 0.0);
+						}
+						
+						//var hoveredBlockXY = hoveredBlockX << 16 + hoveredBlockY;
+						
+						if (blockXYtoEffectStatus[blockXY].hoverHighlight != 0.0)
+						{
+							ctx.globalAlpha = 0.2 * blockXYtoEffectStatus[blockXY].hoverHighlight;
+							console.log("blockXYtoEffectStatus[blockXY].hoverHighlight="+blockXYtoEffectStatus[blockXY].hoverHighlight);
+							ctx.fillStyle = "white";
+							ctx.fillRect(displayX, displayY, getBlockWidth()-1, getBlockHeight()-1);
+							ctx.globalAlpha = 1.0;
+						}
 					}
 				}
 				//ctx.scale(1.0/scaleX, 1.0/scaleY);
 			}
-			ctx.translate(-translationX, -translationY);
+			ctx.translate(-translationX*scaleX, -translationY*scaleY);
 		}
 		ctx.translate(0, -c.height);
 	}
@@ -207,6 +304,8 @@ draw();
 setInterval(function physics(){
 	if (destScaleX != scaleX) scaleX += (destScaleX - scaleX) * 0.09;
 	if (destScaleY != scaleY) scaleY += (destScaleY - scaleY) * 0.09;
+	
+	t += 0.01;
 }, 25);
 
 var dragging = false;
@@ -230,10 +329,18 @@ c.addEventListener("mouseout", function(e){
 c.addEventListener("mousemove", function(e){
 	if (dragging)
 	{
-		translationX = draggingStartTranslationX + e.clientX - draggingStartCanvasX;
-		translationY = draggingStartTranslationY + e.clientY - draggingStartCanvasY;
+		translationX = draggingStartTranslationX + (e.clientX - draggingStartCanvasX) / scaleX;
+		translationY = draggingStartTranslationY + (e.clientY - draggingStartCanvasY) / scaleY;
+	}
+	else
+	{
+		hoveredBlockY = canvasYtoBlockY(e.clientY);
+		hoveredBlockX = canvasXandBlockYtoBlockX(e.clientX, hoveredBlockY);
 	}
 });
+
+var SCROLL_ZOOM_SPEED = 1.3;
+
 // Suppose you're displaying:
 // | 10 --- 30 |
 // Now you zoom out 2x. It should become:
@@ -241,14 +348,14 @@ c.addEventListener("mousemove", function(e){
 c.addEventListener('wheel', function(e) {
 	if (e.deltaY < 0)
 	{
-		destScaleX = scaleX * 1.07;
-		destScaleY = scaleY * 1.07;
+		destScaleX = scaleX * SCROLL_ZOOM_SPEED;
+		destScaleY = scaleY * SCROLL_ZOOM_SPEED;
 		//translationX += c.width * 0.07;
 	}
 	if (e.deltaY > 0)
 	{
-		destScaleX = scaleX / 1.07;
-		destScaleY = scaleY / 1.07;
+		destScaleX = scaleX / SCROLL_ZOOM_SPEED;
+		destScaleY = scaleY / SCROLL_ZOOM_SPEED;
 		//translationX -= c.width * 0.07;
 	}
 });

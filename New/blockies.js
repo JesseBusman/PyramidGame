@@ -1,4 +1,4 @@
-function writeBlockiesToCanvas(canvas, x, y, seed)
+function writeBlockiesToCanvas(canvas, x, y, seed, t=0)
 {
   // The random number is a js implementation of the Xorshift PRNG
   var randseed = new Array(4); // Xorshift: [x, y, z, w] 32 bit values
@@ -24,9 +24,9 @@ function writeBlockiesToCanvas(canvas, x, y, seed)
     return (randseed[3]>>>0) / ((1 << 31)>>>0);
   }
 
-  function createColor() {
+  function createColor(t=0) {
     //saturation is the whole color spectrum
-    var h = Math.floor(rand() * 360);
+    var h = Math.floor((rand()+t) * 360);
     //saturation goes from 40 to 100, it avoids greyish colors
     var s = ((rand() * 60) + 40) + '%';
     //lightness can be anything from 0 to 100, but probabilities are a bell curve around 50%
@@ -70,9 +70,9 @@ function writeBlockiesToCanvas(canvas, x, y, seed)
 	
 	seedrand(seed);
 	
-	var color = createColor();
-	var bgcolor = createColor();
-	var spotcolor = createColor();
+	var color = createColor(t);
+	var bgcolor = createColor(t);
+	var spotcolor = createColor(t);
 	var imageData = createImageData(size);
 	var width = Math.sqrt(imageData.length);
 	

@@ -298,7 +298,7 @@ async function init()
 			console.log("window.web3.currentProvider.constructor.name="+window.web3.currentProvider.constructor.name);
 			
 			// If we have something injected, we prefer to use HTTPS.
-			if (false //document.location.protocol == "http:" /* &&
+			if (false /*document.location.protocol == "http:" /* &&
 			    web3.currentProvider.isMetaMask === true */ )
 			{
 				console.log("We have a browser plugin! Redirecting to HTTPS...");

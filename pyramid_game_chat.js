@@ -234,7 +234,7 @@ async function updateChatMessages()
 			currentTotalChatMessages = Math.max(currentTotalChatMessages, newTotalChatMessages-MAX_DISPLAYED_CHAT_MESSAGES);
 		}
 		
-		console.log("Adding chat messages from index "+currentTotalChatMessages+" to (excl.) index "+newTotalChatMessages);
+		//console.log("Adding chat messages from index "+currentTotalChatMessages+" to (excl.) index "+newTotalChatMessages);
 		
 		// Loop over all the new chat messages and load their data simultaneously:
 		var newChatMessagesIsCensored = [];
@@ -318,7 +318,7 @@ async function updateChatMessages()
 			}
 		}
 		
-		console.log("We have loaded chat messages: "+currentTotalChatMessages);
+		//console.log("We have loaded chat messages: "+currentTotalChatMessages);
 	}
 }
 
@@ -335,7 +335,7 @@ async function updateChatMessagesLeft()
 	// but not if a chat message is being sent
 	if (prev != selectedAccountChatMessagesLeft && !sendingChatMessage)
 	{
-		console.log(selectedAccount+" has "+selectedAccountChatMessagesLeft+" chat messages left");
+		//console.log(selectedAccount+" has "+selectedAccountChatMessagesLeft+" chat messages left");
 		
 		if (selectedAccountChatMessagesLeft == 0)
 		{

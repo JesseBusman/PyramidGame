@@ -378,7 +378,7 @@ async function updateChatboxUsername()
 	
 	if (username == "")
 	{
-		chatboxUsername.innerHTML = "<a href='#' onclick='letUserRegisterUsername();'>Set username</a>";
+		chatboxUsername.innerHTML = "<a href='#' onclick='letUserRegisterUsername();return false;'>Set username</a>";
 		selectedAccountUsername = null;
 	}
 	else

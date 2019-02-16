@@ -61,13 +61,13 @@ function notConnected()
 		
 		else if (typeof(mist) !== "undefined")
 		{
-			statusBoxStatus.innerHTML = "No accounts found! Maybe you haven't given this app permission to view accounts? Mist should have a '<b style='color: rgb(130, 165, 205); background-color: white; padding: 5px; font-size: 10pt;margin: 0px 5px 0px 5px;font-family: Arial;'>CONNECT</b>' button to the top-right of this page.<br/><br/>If you believe this is an error, you can contact the administrator at: info@jesbus.com";
+			statusBoxStatus.innerHTML = "No accounts found! Maybe you haven't given this app permission to view accounts? Mist should have a '<b style='color: rgb(130, 165, 205); background-color: white; padding: 5px; font-size: 10pt;margin: 0px 5px 0px 5px;font-family: Arial;'>CONNECT</b>' button to the top-right of this page.<br/><br/>If you believe this is an error, you can contact the administrator at: info@jesbus.com<br/><br/><a href='#' onclick='window.ethereum.enable();return false;'>Connect</a>";
 		}
 		
 		// Unknown client
 		else
 		{
-			statusBoxStatus.innerHTML = "No accounts found! Maybe you haven't logged in to your Ethereum client yet, or maybe you haven't given this app permission to view accounts?<br/><br/>If you believe this is an error, you can contact the administrator at: info@jesbus.com";
+			statusBoxStatus.innerHTML = "No accounts found! Maybe you haven't logged in to your Ethereum client yet, or maybe you haven't given this app permission to view accounts?<br/><br/>If you believe this is an error, you can contact the administrator at: info@jesbus.com<br/><br/><a href='#' onclick='window.ethereum.enable();return false;'>Connect</a>";
 		}
 		
 		// Keep polling until we can access accounts

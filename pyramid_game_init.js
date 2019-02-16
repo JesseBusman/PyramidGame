@@ -56,7 +56,7 @@ function notConnected()
 		connected = true;
 		if (web3.currentProvider.isMetaMask === true)
 		{
-			statusBoxStatus.innerHTML = "No accounts found!<br/>Maybe you haven't logged in to MetaMask yet?";
+			statusBoxStatus.innerHTML = "No accounts found!<br/>Maybe you haven't logged in or connected to MetaMask yet?<br/><br/><a href='window.ethereum.enable();'>Connect</a>";
 		}
 		
 		else if (typeof(mist) !== "undefined")
